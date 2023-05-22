@@ -210,6 +210,7 @@ def main():
             break
 
 if __name__ == "__main__":
+    print('HElloo')
     main()
 #The PyTorch Dataset class is an abstract class that is used to provide an interface for accessing all the samples
 # in your dataset. It inherits from the PyTorch torch.utils.data.Dataset class and overrides two methods:
