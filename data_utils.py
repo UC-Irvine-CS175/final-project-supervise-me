@@ -284,11 +284,6 @@ def main():
     """
     A driver function for testing the functions in this module. Use if you like.
     """
-
-    output_dir = '../data/processed'
-
-    # s3 bucket info
-    bucket_name = 'nasa-bps-training-data'
     s3_path = 'Microscopy/train'
     s3_meta_csv_path = f'{s3_path}/meta.csv'
     s3_client = boto3.client('s3', config=Config(signature_version=UNSIGNED))
