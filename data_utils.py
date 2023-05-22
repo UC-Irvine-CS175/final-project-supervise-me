@@ -284,6 +284,7 @@ def main():
     """
     A driver function for testing the functions in this module. Use if you like.
     """
+    print("testing for merge conflicts")
 
     output_dir = '../data/processed'
 
