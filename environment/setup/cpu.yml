@@ -1,0 +1,27 @@
+name: cpu
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - pip
+  - cpuonly
+  - pytorch
+  - torchvision
+  - pandas
+  - pip:
+    - pytorch-lightning
+    - tensorboard
+    - tabulate
+    - tqdm
+    - pillow
+    - notebook
+    - jupyterlab
+    - matplotlib
+    - seaborn
+    - ipywidgets
+    - boto3
+    - pyprojroot
+    - scikit-learn
+    - opencv-python
