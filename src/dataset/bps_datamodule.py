@@ -158,7 +158,7 @@ class BPSDataModule(pl.LightningDataModule):
         Returns the training dataloader.
         """
         return DataLoader(self.training_bps, batch_size=self.batch_size,
-                          shuffle=True, num_workers=self.num_workers)
+                          shuffle=True)
 
     
     def val_dataloader(self) -> EVAL_DATALOADERS:
@@ -166,7 +166,7 @@ class BPSDataModule(pl.LightningDataModule):
         Returns the validation dataloader.
         """
         return DataLoader(self.val_bps, batch_size=self.batch_size,
-                          shuffle=False, num_workers=self.num_workers)
+                          shuffle=False)
     
     def test_dataloader(self) -> EVAL_DATALOADERS:
         """
@@ -174,7 +174,7 @@ class BPSDataModule(pl.LightningDataModule):
         since NASA GeneLab has not released the test set.
         """
         return DataLoader(self.test_bps, batch_size=self.batch_size,
-                          shuffle=False, num_workers=self.num_workers)
+                          shuffle=False)
 
 def main():
     """main function to test PyTorch Dataset class"""
@@ -206,7 +206,7 @@ def main():
                            s3_path=s3_path,
                            )
     ##### UNCOMMENT THE LINE BELOW TO DOWNLOAD DATA FROM S3!!! #####
-    # bps_dm.prepare_data()
+    #bps_dm.prepare_data()
     ##### WHEN YOU ARE DONE REMEMBER TO COMMENT THE LINE ABOVE TO AVOID
     ##### DOWNLOADING THE DATA AGAIN!!! #####
     bps_dm.setup(stage='train')

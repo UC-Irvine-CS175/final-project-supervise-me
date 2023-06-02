@@ -16,7 +16,7 @@ root = pyprojroot.find_root(pyprojroot.has_dir(".git"))
 import sys
 sys.path.append(str(root))
 from sklearn.metrics import accuracy_score
-from src.dataset.bps_dataset import BPSMouseDataset, BPSDataModule
+from src.dataset.bps_dataset import BPSMouseDataset
 from torchmetrics import Accuracy
 from src.dataset.augmentation import(
     NormalizeBPS,
@@ -127,6 +127,8 @@ class LeNet5(nn.Module):
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 2)
 
+        
+
     def forward(self, x: torch.Tensor):
         x = self.pool1(F.relu(self.conv1(x)))
         x = self.pool2(F.relu(self.conv2(x)))
@@ -147,12 +149,17 @@ class BPSClassifier(pl.LightningModule):
         self.val_acc = Accuracy(task='binary',
                                 num_classes=2,
                                 multidim_average='global')
+        self.label_dict = {
+                    "Fe" : 0,
+                    "X-ray" : 1
+                }
 
     def forward(self, x: torch.Tensor):
         return self.model(x)
 
     def training_step(self, batch, batch_idx):
         x, y = batch
+        y = torch.tensor([self.label_dict[i] for i in y])
         y_hat = self.model(x)
         loss = F.cross_entropy(y_hat, y)
         # self.log('train_loss', loss)            # Tensorboard
@@ -161,7 +168,10 @@ class BPSClassifier(pl.LightningModule):
     
     def validation_step(self, batch, batch_idx):
         x, y = batch
+        y = torch.tensor([self.label_dict[i] for i in y])
+
         y_hat = self.model(x)
+        print(y_hat)
         val_loss = F.cross_entropy(y_hat, y)
         y_pred = torch.argmax(y_hat, dim=1)
         y_truth = torch.argmax(y, dim=1)
@@ -219,7 +229,7 @@ def main():
 
     # Define training dataloader
     train_loader = DataLoader(train_dataset, batch_size=config.batch_size,
-                              shuffle=False, num_workers=12)
+                              shuffle=False)
 
 
     # Define validation dataset
@@ -237,7 +247,7 @@ def main():
 
     # Define validation dataloader
     validate_dataloader = DataLoader(validate_dataset, batch_size=config.batch_size,
-                                     shuffle=False, num_workers=12)
+                                     shuffle=False)
 
     # Initialize wandb logger
     wandb.init(
