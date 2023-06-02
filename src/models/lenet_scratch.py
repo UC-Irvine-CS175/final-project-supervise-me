@@ -169,12 +169,10 @@ class BPSClassifier(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = batch
         y = torch.tensor([self.label_dict[i] for i in y])
-
         y_hat = self.model(x)
-        print(y_hat)
         val_loss = F.cross_entropy(y_hat, y)
         y_pred = torch.argmax(y_hat, dim=1)
-        y_truth = torch.argmax(y, dim=1)
+        y_truth = y
 
         # Accuracy is the average of the number of an entire batch of correct predictions
         val_acc = torch.mean((torch.eq(y_pred, y_truth)).float())
