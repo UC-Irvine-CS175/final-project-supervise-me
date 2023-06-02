@@ -36,6 +36,17 @@ class ResizeBPS(object):
         return cv2.resize(img, (self.resize_width, self.resize_height), interpolation=cv2.INTER_AREA)
         #raise NotImplementedError
 
+class RescaleBPS(object):
+    def __call__(self, img_array) -> np.array(np.float32):
+        """
+        Rescale the array values between -1 and 1
+        """
+        img_array = img_array / np.iinfo(np.uint16).max
+        img_float = img_array.astype(np.float32)
+        img_rescaled = img_float * 2 - 1
+        return img_rescaled
+
+
 class VFlipBPS(object):
     def __call__(self, image) -> np.ndarray:
         """
