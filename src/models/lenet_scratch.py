@@ -186,8 +186,6 @@ class BPSClassifier(pl.LightningModule):
         optimizer = optim.Adam(self.parameters(), lr=3e-4)
         return optimizer
 
-
-
 def main():
     """
     Testing function for BPS AutoEncoder
