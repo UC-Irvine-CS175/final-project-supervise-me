@@ -225,7 +225,7 @@ def main():
 
     # Define training dataloader
     train_loader = DataLoader(train_dataset, batch_size=config.batch_size,
-                              shuffle=False)
+                              shuffle=False, num_workers= 4)
 
 
     # Define validation dataset
@@ -243,7 +243,7 @@ def main():
 
     # Define validation dataloader
     validate_dataloader = DataLoader(validate_dataset, batch_size=config.batch_size,
-                                     shuffle=False)
+                                     shuffle=False, num_workers= 4)
 
     # Initialize wandb logger
     wandb.init(
