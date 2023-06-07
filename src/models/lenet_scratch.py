@@ -132,7 +132,7 @@ class LeNet5(nn.Module):
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.fc1 = nn.Linear(16 * 47 * 47, 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 2) #6 is the num of different labels
+        self.fc3 = nn.Linear(84, 6) #6 is the num of different labels
 
         
 
