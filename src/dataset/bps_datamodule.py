@@ -34,6 +34,7 @@ from src.dataset.bps_dataset import BPSMouseDataset
 from src.dataset.augmentation import (
     NormalizeBPS,
     ResizeBPS,
+    ToThreeChannels,
     ToTensor
 )
 
@@ -50,7 +51,7 @@ class BPSDataModule(pl.LightningDataModule):
                  test_dir: str = None,
                  file_on_prem: bool = True,
                  batch_size: int = 4,
-                 num_workers: int = 2,
+                 num_workers: int = 12,
                  meta_csv_file: str = None,
                  meta_root_dir: str = None,
                  s3_client: boto3.client = None,
@@ -93,7 +94,8 @@ class BPSDataModule(pl.LightningDataModule):
         self.transform = transforms.Compose([
                             NormalizeBPS(),
                             ResizeBPS(resize_dims[0], resize_dims[1]),
-                            ToTensor()
+                            ToThreeChannels(),
+                            ToTensor(),
                 ])
         self.on_prem = file_on_prem
         self.batch_size = batch_size
@@ -158,7 +160,7 @@ class BPSDataModule(pl.LightningDataModule):
         Returns the training dataloader.
         """
         return DataLoader(self.training_bps, batch_size=self.batch_size,
-                          shuffle=True, num_workers=self.num_workers)
+                          shuffle=True)
 
     
     def val_dataloader(self) -> EVAL_DATALOADERS:
@@ -166,7 +168,7 @@ class BPSDataModule(pl.LightningDataModule):
         Returns the validation dataloader.
         """
         return DataLoader(self.val_bps, batch_size=self.batch_size,
-                          shuffle=False, num_workers=self.num_workers)
+                          shuffle=False)
     
     def test_dataloader(self) -> EVAL_DATALOADERS:
         """
@@ -174,7 +176,7 @@ class BPSDataModule(pl.LightningDataModule):
         since NASA GeneLab has not released the test set.
         """
         return DataLoader(self.test_bps, batch_size=self.batch_size,
-                          shuffle=False, num_workers=self.num_workers)
+                          shuffle=False)
 
 def main():
     """main function to test PyTorch Dataset class"""
