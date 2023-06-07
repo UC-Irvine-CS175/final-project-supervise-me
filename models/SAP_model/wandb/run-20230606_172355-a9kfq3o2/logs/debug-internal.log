@@ -1,0 +1,35 @@
+2023-06-06 17:23:55,920 INFO    StreamThr :47208 [internal.py:wandb_internal():86] W&B internal server running at pid: 47208, started at: 2023-06-06 17:23:55.919550
+2023-06-06 17:23:55,921 DEBUG   HandlerThread:47208 [handler.py:handle_request():144] handle_request: status
+2023-06-06 17:23:55,939 INFO    WriterThread:47208 [datastore.py:open_for_write():85] open: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_172355-a9kfq3o2\run-a9kfq3o2.wandb
+2023-06-06 17:23:55,940 DEBUG   SenderThread:47208 [sender.py:send():375] send: header
+2023-06-06 17:23:56,187 DEBUG   SenderThread:47208 [sender.py:send():375] send: run
+2023-06-06 17:23:56,758 INFO    SenderThread:47208 [dir_watcher.py:__init__():219] watching files in: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_172355-a9kfq3o2\files
+2023-06-06 17:23:56,758 INFO    SenderThread:47208 [sender.py:_start_run_threads():1124] run started: a9kfq3o2 with start time 1686097435.928637
+2023-06-06 17:23:56,758 DEBUG   SenderThread:47208 [sender.py:send_request():402] send_request: summary_record
+2023-06-06 17:23:56,760 INFO    SenderThread:47208 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-06 17:23:56,764 DEBUG   HandlerThread:47208 [handler.py:handle_request():144] handle_request: check_version
+2023-06-06 17:23:56,764 DEBUG   SenderThread:47208 [sender.py:send_request():402] send_request: check_version
+2023-06-06 17:23:57,231 DEBUG   HandlerThread:47208 [handler.py:handle_request():144] handle_request: run_start
+2023-06-06 17:23:57,253 DEBUG   HandlerThread:47208 [system_info.py:__init__():31] System info init
+2023-06-06 17:23:57,253 DEBUG   HandlerThread:47208 [system_info.py:__init__():46] System info init done
+2023-06-06 17:23:57,253 INFO    HandlerThread:47208 [system_monitor.py:start():181] Starting system monitor
+2023-06-06 17:23:57,253 INFO    SystemMonitor:47208 [system_monitor.py:_start():145] Starting system asset monitoring threads
+2023-06-06 17:23:57,253 INFO    HandlerThread:47208 [system_monitor.py:probe():201] Collecting system info
+2023-06-06 17:23:57,264 INFO    SystemMonitor:47208 [interfaces.py:start():190] Started cpu monitoring
+2023-06-06 17:23:57,265 INFO    SystemMonitor:47208 [interfaces.py:start():190] Started disk monitoring
+2023-06-06 17:23:57,266 INFO    SystemMonitor:47208 [interfaces.py:start():190] Started gpu monitoring
+2023-06-06 17:23:57,284 INFO    SystemMonitor:47208 [interfaces.py:start():190] Started memory monitoring
+2023-06-06 17:23:57,294 INFO    SystemMonitor:47208 [interfaces.py:start():190] Started network monitoring
+2023-06-06 17:23:57,304 DEBUG   HandlerThread:47208 [system_info.py:probe():195] Probing system
+2023-06-06 17:23:57,305 DEBUG   HandlerThread:47208 [system_info.py:_probe_git():180] Probing git
+2023-06-06 17:23:57,374 DEBUG   HandlerThread:47208 [system_info.py:_probe_git():188] Probing git done
+2023-06-06 17:23:57,374 DEBUG   HandlerThread:47208 [system_info.py:probe():240] Probing system done
+2023-06-06 17:23:57,374 DEBUG   HandlerThread:47208 [system_monitor.py:probe():210] {'os': 'Windows-10-10.0.22621-SP0', 'python': '3.10.10', 'heartbeatAt': '2023-06-07T00:23:57.304634', 'startedAt': '2023-06-07T00:23:55.893285', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': 'C:\\Users\\dhpng\\cs175\\final-project-supervise-me\\src\\models\\lenet_scratch.py', 'codePath': 'src\\models\\lenet_scratch.py', 'git': {'remote': 'https://github.com/UC-Irvine-CS175/final-project-supervise-me.git', 'commit': 'f89156b0392ea0845b4270da2518ee22e8f2599e'}, 'email': 'dahoang1@uci.edu', 'root': 'C:/Users/dhpng/cs175/final-project-supervise-me', 'host': 'DESKTOP-I8A6QH7', 'username': 'dhpng', 'executable': 'C:\\Users\\dhpng\\anaconda3\\envs\\cs175_gpu\\python.exe', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 3400.0, 'min': 0.0, 'max': 3400.0}, 'cpu_freq_per_core': [{'current': 3400.0, 'min': 0.0, 'max': 3400.0}], 'disk': {'total': 464.42187118530273, 'used': 321.2994155883789}, 'gpu': 'NVIDIA GeForce GTX 1660 SUPER', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce GTX 1660 SUPER', 'memory_total': 6442450944}], 'memory': {'total': 15.932750701904297}}
+2023-06-06 17:23:57,375 INFO    HandlerThread:47208 [system_monitor.py:probe():211] Finished collecting system info
+2023-06-06 17:23:57,375 INFO    HandlerThread:47208 [system_monitor.py:probe():214] Publishing system info
+2023-06-06 17:23:57,375 DEBUG   HandlerThread:47208 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2023-06-06 17:23:57,376 DEBUG   HandlerThread:47208 [system_info.py:_save_pip():67] Saving pip packages done
+2023-06-06 17:23:57,376 DEBUG   HandlerThread:47208 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2023-06-06 17:23:57,766 INFO    Thread-16 :47208 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_172355-a9kfq3o2\files\requirements.txt
+2023-06-06 17:23:57,766 INFO    Thread-16 :47208 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_172355-a9kfq3o2\files\conda-environment.yaml
+2023-06-06 17:23:57,766 INFO    Thread-16 :47208 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_172355-a9kfq3o2\files\wandb-summary.json

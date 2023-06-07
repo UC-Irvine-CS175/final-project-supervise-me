@@ -1,0 +1,15 @@
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+  | Name    | Type           | Params
+-------------------------------------------
+0 | model   | LeNet5         | 4.3 M
+1 | val_acc | BinaryAccuracy | 0
+-------------------------------------------
+4.3 M     Trainable params
+0         Non-trainable params
+4.3 M     Total params
+17.017    Total estimated model params size (MB)
+Sanity Checking: 0it [00:00, ?it/s]

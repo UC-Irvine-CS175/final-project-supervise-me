@@ -1,0 +1,4 @@
+
+[34m[1mwandb[39m[22m: [33mWARNING[39m Calling wandb.login() after wandb.init() has no effect.
+Create sweep with ID: 0wt6h8ex
+Sweep URL: https://wandb.ai/supervise-me/SAP-lnet-from-scratch/sweeps/0wt6h8ex

@@ -1,0 +1,50 @@
+{
+    "os": "Windows-10-10.0.22621-SP0",
+    "python": "3.10.10",
+    "heartbeatAt": "2023-06-07T00:00:04.159024",
+    "startedAt": "2023-06-07T00:00:02.742002",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "C:\\Users\\dhpng\\cs175\\final-project-supervise-me\\src\\models\\lenet_scratch.py",
+    "codePath": "src\\models\\lenet_scratch.py",
+    "git": {
+        "remote": "https://github.com/UC-Irvine-CS175/final-project-supervise-me.git",
+        "commit": "f89156b0392ea0845b4270da2518ee22e8f2599e"
+    },
+    "email": "dahoang1@uci.edu",
+    "root": "C:/Users/dhpng/cs175/final-project-supervise-me",
+    "host": "DESKTOP-I8A6QH7",
+    "username": "dhpng",
+    "executable": "C:\\Users\\dhpng\\anaconda3\\envs\\cs175_gpu\\python.exe",
+    "cpu_count": 6,
+    "cpu_count_logical": 12,
+    "cpu_freq": {
+        "current": 3400.0,
+        "min": 0.0,
+        "max": 3400.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3400.0,
+            "min": 0.0,
+            "max": 3400.0
+        }
+    ],
+    "disk": {
+        "total": 464.42187118530273,
+        "used": 319.1986618041992
+    },
+    "gpu": "NVIDIA GeForce GTX 1660 SUPER",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce GTX 1660 SUPER",
+            "memory_total": 6442450944
+        }
+    ],
+    "memory": {
+        "total": 15.932750701904297
+    }
+}

@@ -1,0 +1,29 @@
+2023-06-06 15:27:28,889 INFO    Thread-8 (_run_job):31600 [wandb_setup.py:_flush():76] Current SDK version is 0.15.3
+2023-06-06 15:27:28,889 INFO    Thread-8 (_run_job):31600 [wandb_setup.py:_flush():76] Configure stats pid to 31600
+2023-06-06 15:27:28,889 INFO    Thread-8 (_run_job):31600 [wandb_setup.py:_flush():76] Loading settings from C:\Users\dhpng\.config\wandb\settings
+2023-06-06 15:27:28,890 INFO    Thread-8 (_run_job):31600 [wandb_setup.py:_flush():76] Loading settings from C:\Users\dhpng\cs175\final-project-supervise-me\wandb\settings
+2023-06-06 15:27:28,890 INFO    Thread-8 (_run_job):31600 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'project': 'SAP-lnet-from-scratch', 'entity': 'supervise-me', 'root_dir': 'C:\\Users\\dhpng\\cs175\\final-project-supervise-me', 'sweep_id': 'nes0kox5', 'run_id': '77mmmncs', 'sweep_param_path': 'C:\\Users\\dhpng\\cs175\\final-project-supervise-me\\wandb\\sweep-nes0kox5\\config-77mmmncs.yaml'}
+2023-06-06 15:27:28,890 INFO    Thread-8 (_run_job):31600 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2023-06-06 15:27:28,890 INFO    Thread-8 (_run_job):31600 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'src\\models\\lenet_scratch.py', 'program': 'C:\\Users\\dhpng\\cs175\\final-project-supervise-me\\src\\models\\lenet_scratch.py'}
+2023-06-06 15:27:28,890 INFO    Thread-8 (_run_job):31600 [wandb_init.py:_log_setup():507] Logging user logs to C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_152728-77mmmncs\logs\debug.log
+2023-06-06 15:27:28,890 INFO    Thread-8 (_run_job):31600 [wandb_init.py:_log_setup():508] Logging internal logs to C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_152728-77mmmncs\logs\debug-internal.log
+2023-06-06 15:27:28,890 INFO    Thread-8 (_run_job):31600 [wandb_init.py:init():547] calling init triggers
+2023-06-06 15:27:28,891 INFO    Thread-8 (_run_job):31600 [wandb_init.py:init():554] wandb.init called with sweep_config: {'batch_size': 64, 'epochs': 10}
+config: {}
+2023-06-06 15:27:28,891 INFO    Thread-8 (_run_job):31600 [wandb_init.py:init():596] starting backend
+2023-06-06 15:27:28,891 INFO    Thread-8 (_run_job):31600 [wandb_init.py:init():600] setting up manager
+2023-06-06 15:27:28,901 INFO    Thread-8 (_run_job):31600 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=spawn, using: spawn
+2023-06-06 15:27:28,913 INFO    Thread-8 (_run_job):31600 [wandb_init.py:init():606] backend started and connected
+2023-06-06 15:27:28,923 INFO    Thread-8 (_run_job):31600 [wandb_run.py:_config_callback():1286] config_cb None None {'batch_size': 64, 'epochs': 10}
+2023-06-06 15:27:28,923 INFO    Thread-8 (_run_job):31600 [wandb_init.py:init():700] updated telemetry
+2023-06-06 15:27:29,182 INFO    Thread-8 (_run_job):31600 [wandb_init.py:init():737] communicating run to backend with 60.0 second timeout
+2023-06-06 15:27:29,785 INFO    Thread-8 (_run_job):31600 [wandb_run.py:_on_init():2177] communicating current version
+2023-06-06 15:27:30,238 INFO    Thread-8 (_run_job):31600 [wandb_run.py:_on_init():2186] got version response upgrade_message: "wandb version 0.15.4 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-06-06 15:27:30,238 INFO    Thread-8 (_run_job):31600 [wandb_init.py:init():787] starting run threads in backend
+2023-06-06 15:27:38,355 INFO    Thread-8 (_run_job):31600 [wandb_run.py:_console_start():2158] atexit reg
+2023-06-06 15:27:38,355 INFO    Thread-8 (_run_job):31600 [wandb_run.py:_redirect():2013] redirect: SettingsConsole.WRAP_RAW
+2023-06-06 15:27:38,357 INFO    Thread-8 (_run_job):31600 [wandb_run.py:_redirect():2078] Wrapping output streams.
+2023-06-06 15:27:38,357 INFO    Thread-8 (_run_job):31600 [wandb_run.py:_redirect():2103] Redirects installed.
+2023-06-06 15:27:38,358 INFO    Thread-8 (_run_job):31600 [wandb_init.py:init():829] run started, returning control to user process
+2023-06-06 15:43:13,951 WARNING MsgRouterThr:31600 [router.py:message_loop():77] message_loop has been closed

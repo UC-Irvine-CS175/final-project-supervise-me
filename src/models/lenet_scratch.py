@@ -16,7 +16,7 @@ root = pyprojroot.find_root(pyprojroot.has_dir(".git"))
 import sys
 sys.path.append(str(root))
 from sklearn.metrics import accuracy_score
-from src.dataset.bps_dataset import BPSMouseDataset, BPSDataModule
+from src.dataset.bps_dataset import BPSMouseDataset
 from torchmetrics import Accuracy
 from src.dataset.augmentation import(
     NormalizeBPS,
@@ -125,7 +125,9 @@ class LeNet5(nn.Module):
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.fc1 = nn.Linear(16 * 47 * 47, 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 2)
+        self.fc3 = nn.Linear(84, 2) #6 is the num of different labels
+
+        
 
     def forward(self, x: torch.Tensor):
         x = self.pool1(F.relu(self.conv1(x)))
@@ -144,9 +146,16 @@ class BPSClassifier(pl.LightningModule):
     def __init__(self):
         super().__init__()
         self.model = LeNet5()
+        if torch.cuda.is_available():
+            self.model.to('cuda')
         self.val_acc = Accuracy(task='binary',
                                 num_classes=2,
                                 multidim_average='global')
+        self.label_dict = {
+                    "Fe" : 0,
+                    "X-ray" : 1
+                }
+        
 
     def forward(self, x: torch.Tensor):
         return self.model(x)
@@ -154,6 +163,9 @@ class BPSClassifier(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self.model(x)
+        y = torch.tensor([self.label_dict[i] for i in y])
+        if torch.cuda.is_available():  
+            y.to('cuda')
         loss = F.cross_entropy(y_hat, y)
         # self.log('train_loss', loss)            # Tensorboard
         wandb.log({'train_loss' : loss})        # Weights and Biases
@@ -162,9 +174,12 @@ class BPSClassifier(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self.model(x)
+        y = torch.tensor([self.label_dict[i] for i in y])
+        if torch.cuda.is_available():
+            y.to('cuda')
         val_loss = F.cross_entropy(y_hat, y)
         y_pred = torch.argmax(y_hat, dim=1)
-        y_truth = torch.argmax(y, dim=1)
+        y_truth = y
 
         # Accuracy is the average of the number of an entire batch of correct predictions
         val_acc = torch.mean((torch.eq(y_pred, y_truth)).float())
@@ -176,6 +191,8 @@ class BPSClassifier(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr=3e-4)
+        #to-do: pytorch lighting scheduler option here (LearningRateMonitor)
+        # https://lightning.ai/docs/pytorch/stable/common/optimization.html#learning-rate-scheduling
         return optimizer
 
 
@@ -202,11 +219,24 @@ def main():
         - Test loss should be lower than validation loss
     """
     # Define configuration options
-    config = BPSConfig()
-
-    # Define training dataset
-    train_dataset = BPSMouseDataset(config.train_meta_fname,
-                                    config.data_dir,
+    my_settings = BPSConfig()
+    
+    wandb.init(
+    # set the wandb project where this run will be logged
+    project="SAP-lnet-from-scratch",
+    dir=my_settings.save_dir,
+    # track hyperparameters and run metadata
+    )
+    
+    
+    # print("------PRINTING WANDB.CONFIG--------")
+    # print(wandb.config)
+    # print("-----------------------------------")
+    # Define training dataloader
+    
+     # Define training dataset
+    train_dataset = BPSMouseDataset(my_settings.train_meta_fname,
+                                    my_settings.data_dir,
                                     transform=transforms.Compose([
                                         NormalizeBPS(),
                                         ResizeBPS(224, 224),
@@ -216,15 +246,12 @@ def main():
                                         RandomCropBPS(200, 200),
                                         ToTensor()]),
                                     file_on_prem=True)
-
-    # Define training dataloader
-    train_loader = DataLoader(train_dataset, batch_size=config.batch_size,
-                              shuffle=False, num_workers=12)
-
+    train_loader = DataLoader(train_dataset, batch_size=16,
+                              shuffle=False, num_workers= 4)
 
     # Define validation dataset
-    validate_dataset = BPSMouseDataset(config.val_meta_fname,
-                                       config.data_dir,
+    validate_dataset = BPSMouseDataset(my_settings.val_meta_fname,
+                                       my_settings.data_dir,
                                        transform=transforms.Compose([
                                             NormalizeBPS(),
                                             ResizeBPS(224, 224),
@@ -236,29 +263,16 @@ def main():
                                         file_on_prem=True)
 
     # Define validation dataloader
-    validate_dataloader = DataLoader(validate_dataset, batch_size=config.batch_size,
-                                     shuffle=False, num_workers=12)
-
-    # Initialize wandb logger
-    wandb.init(
-    # set the wandb project where this run will be logged
-    project="SAP-lnet-from-scratch",
-    dir=config.save_dir,
-    # track hyperparameters and run metadata
-    config={
-    "learning_rate": 0.0003,
-    "architecture": "LeNET",
-    "dataset": "BPS Microscopy Mouse Dataset",
-    "epochs": config.max_epochs,})
-
+    validate_dataloader = DataLoader(validate_dataset, batch_size=16,
+                                     shuffle=False, num_workers= 4)
     # model
     autoencoder = BPSClassifier()
 
     # train model with training and validation dataloaders
-    trainer = pl.Trainer(default_root_dir=config.save_dir,
-                         accelerator=config.accelerator,
-                         devices=config.devices,
-                         max_epochs=config.max_epochs,
+    trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
+                         accelerator=my_settings.accelerator,
+                         devices=my_settings.devices,
+                         max_epochs=5,
                          profiler="simple")
 
     trainer.fit(model=autoencoder,
@@ -267,10 +281,10 @@ def main():
 
     # test model
     # Automate saving checkpoints from training with this assignment
-    trainer = pl.Trainer(default_root_dir=config.save_dir,
-                         accelerator=config.accelerator,
-                         devices=config.devices,
-                         max_epochs=config.max_epochs)
+    trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
+                         accelerator=my_settings.accelerator,
+                         devices=my_settings.devices,
+                         max_epochs=5)
     
     # # Load checkpoint from training
     # model = BPSAutoEncoder.load_from_checkpoint(config.save_dir + 'lightning_logs/version_0/checkpoints/epoch=9.ckpt')
@@ -281,8 +295,31 @@ def main():
     # # Define test dataset
 
     # # Define test dataloader
+    wandb.finish()
 
-    
+
 
 if __name__ == "__main__":
-    main()
+    sweep_config = {
+    'method': 'grid',
+    'name': 'sweep',
+    'run_cap': 1,
+    'metric': {
+        'goal': 'minimize', 
+        'name': 'train_loss'
+        },
+    'parameters': {
+        'batch_size': {'values': [16, 32, 64]},
+        'epochs': {'values': [5, 10, 15]},
+        #'lr': {'max': 0.1, 'min': 0.0001}
+     }
+    }
+    
+
+    #starting the sweep
+    sweep_id = wandb.sweep(
+            sweep=sweep_config,
+            project="SAP-lnet-from-scratch"
+        )
+
+    wandb.agent(sweep_id = sweep_id, function=main, count=10)
