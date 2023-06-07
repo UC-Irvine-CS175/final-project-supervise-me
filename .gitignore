@@ -1,2 +1,4 @@
 #data folder
 data/
+models/SAP_model
+wandb/

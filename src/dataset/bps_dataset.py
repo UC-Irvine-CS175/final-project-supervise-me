@@ -135,9 +135,16 @@ class BPSMouseDataset(torch.utils.data.Dataset):
             img = np.frombuffer(image_buffer.getvalue(), dtype=np.uint16)
         # apply tranformation if available
         img = self.transform(img)
+        label = self.df.iloc[idx, 2]
+        # return the image and associated one-hot encoded label
+        label_dict = {
+                    "Fe" : [1,0],
+                    "X-ray" : [0,1] # TODO: look into pandas getdummies
+                }
+        
+        label_tensor = torch.tensor(label_dict[label], dtype=torch.float32)
 
-        # return the image and associated label
-        return img, self.df.iloc[idx, 2]
+        return img, label_tensor
         #raise NotImplementedError
 
 
