@@ -34,6 +34,10 @@ from src.dataset.bps_dataset import BPSMouseDataset
 from src.dataset.augmentation import (
     NormalizeBPS,
     ResizeBPS,
+    VFlipBPS,
+    HFlipBPS,
+    RotateBPS,
+    RandomCropBPS,
     ToTensor
 )
 
@@ -45,7 +49,6 @@ class BPSDataModule(pl.LightningDataModule):
                  train_dir: str,
                  val_csv_file: str,
                  val_dir: str,
-                 resize_dims: tuple,
                  test_csv_file: str = None,
                  test_dir: str = None,
                  file_on_prem: bool = True,
@@ -89,10 +92,13 @@ class BPSDataModule(pl.LightningDataModule):
         self.on_prem = file_on_prem
         self.meta_csv = meta_csv_file
         self.meta_dir = meta_root_dir
-        self.resize_dims = resize_dims
         self.transform = transforms.Compose([
                             NormalizeBPS(),
-                            ResizeBPS(resize_dims[0], resize_dims[1]),
+                            ResizeBPS(224, 224),
+                            VFlipBPS(),
+                            HFlipBPS(),
+                            RotateBPS(90),
+                            RandomCropBPS(200, 200),
                             ToTensor()
                 ])
         self.on_prem = file_on_prem
@@ -158,7 +164,7 @@ class BPSDataModule(pl.LightningDataModule):
         Returns the training dataloader.
         """
         return DataLoader(self.training_bps, batch_size=self.batch_size,
-                          shuffle=True, num_workers=self.num_workers)
+                          shuffle=True)
 
     
     def val_dataloader(self) -> EVAL_DATALOADERS:
@@ -166,7 +172,7 @@ class BPSDataModule(pl.LightningDataModule):
         Returns the validation dataloader.
         """
         return DataLoader(self.val_bps, batch_size=self.batch_size,
-                          shuffle=False, num_workers=self.num_workers)
+                          shuffle=False)
     
     def test_dataloader(self) -> EVAL_DATALOADERS:
         """
@@ -174,7 +180,7 @@ class BPSDataModule(pl.LightningDataModule):
         since NASA GeneLab has not released the test set.
         """
         return DataLoader(self.test_bps, batch_size=self.batch_size,
-                          shuffle=False, num_workers=self.num_workers)
+                          shuffle=False)
 
 def main():
     """main function to test PyTorch Dataset class"""
@@ -206,7 +212,7 @@ def main():
                            s3_path=s3_path,
                            )
     ##### UNCOMMENT THE LINE BELOW TO DOWNLOAD DATA FROM S3!!! #####
-    # bps_dm.prepare_data()
+    #bps_dm.prepare_data()
     ##### WHEN YOU ARE DONE REMEMBER TO COMMENT THE LINE ABOVE TO AVOID
     ##### DOWNLOADING THE DATA AGAIN!!! #####
     bps_dm.setup(stage='train')

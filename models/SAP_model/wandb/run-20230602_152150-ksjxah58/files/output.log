@@ -1,0 +1,55 @@
+GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+Missing logger folder: /Users/thientoanvu/Desktop/Classes/CS175/final-project-supervise-me/models/SAP_model/lightning_logs
+  | Name    | Type           | Params
+-------------------------------------------
+0 | model   | LeNet5         | 4.3 M
+1 | val_acc | BinaryAccuracy | 0
+-------------------------------------------
+4.3 M     Trainable params
+0         Non-trainable params
+4.3 M     Total params
+17.017    Total estimated model params size (MB)
+/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:430: PossibleUserWarning: The dataloader, val_dataloader, does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` (try 4 which is the number of cpus on this machine) in the `DataLoader` init to improve performance.
+  rank_zero_warn(
+Traceback (most recent call last):
+  File "/Users/thientoanvu/Desktop/Classes/CS175/final-project-supervise-me/src/models/lenet_scratch.py", line 282, in <module>
+    main()
+  File "/Users/thientoanvu/Desktop/Classes/CS175/final-project-supervise-me/src/models/lenet_scratch.py", line 258, in main
+    trainer.fit(model=autoencoder,
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 520, in fit
+    call._call_and_handle_interrupt(
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 559, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 935, in _run
+    results = self._run_stage()
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 976, in _run_stage
+    self._run_sanity_check()
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1005, in _run_sanity_check
+    val_loop.run()
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 177, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 115, in run
+    self._evaluation_step(batch, batch_idx, dataloader_idx)
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 375, in _evaluation_step
+    output = call._call_strategy_hook(trainer, hook_name, *step_kwargs.values())
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 288, in _call_strategy_hook
+    output = fn(*args, **kwargs)
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 378, in validation_step
+    return self.model.validation_step(*args, **kwargs)
+  File "/Users/thientoanvu/Desktop/Classes/CS175/final-project-supervise-me/src/models/lenet_scratch.py", line 175, in validation_step
+    y_hat = self.model(x)
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/thientoanvu/Desktop/Classes/CS175/final-project-supervise-me/src/models/lenet_scratch.py", line 139, in forward
+    x = F.relu(self.fc1(x))
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 114, in forward
+    return F.linear(input, self.weight, self.bias)
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (16x2704 and 35344x120)
+Sanity Checking DataLoader 0:   0%|                                                          | 0/2 [00:00<?, ?it/s]

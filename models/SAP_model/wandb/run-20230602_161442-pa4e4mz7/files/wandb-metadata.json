@@ -1,0 +1,42 @@
+{
+    "os": "macOS-12.6.6-x86_64-i386-64bit",
+    "python": "3.10.10",
+    "heartbeatAt": "2023-06-02T23:14:43.319926",
+    "startedAt": "2023-06-02T23:14:42.824220",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/thientoanvu/Desktop/Classes/CS175/final-project-supervise-me/src/models/lenet_scratch.py",
+    "codePath": "src/models/lenet_scratch.py",
+    "git": {
+        "remote": "git@github.com:UC-Irvine-CS175/final-project-supervise-me.git",
+        "commit": "7a4f0fbe4d0fb1894602707b1e3914551177cf3b"
+    },
+    "email": "briantvu12316@gmail.com",
+    "root": "/Users/thientoanvu/Desktop/Classes/CS175/final-project-supervise-me",
+    "host": "dhcp-10-8-046-097.mobile.reshsg.uci.edu",
+    "username": "thientoanvu",
+    "executable": "/Users/thientoanvu/opt/anaconda3/envs/cpu_cs175/bin/python3",
+    "cpu_count": 2,
+    "cpu_count_logical": 4,
+    "cpu_freq": {
+        "current": 2900,
+        "min": 2900,
+        "max": 2900
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2900,
+            "min": 2900,
+            "max": 2900
+        }
+    ],
+    "disk": {
+        "total": 465.62699127197266,
+        "used": 14.357650756835938
+    },
+    "memory": {
+        "total": 8.0
+    }
+}
