@@ -135,12 +135,16 @@ class BPSMouseDataset(torch.utils.data.Dataset):
             img = np.frombuffer(image_buffer.getvalue(), dtype=np.uint16)
         # apply tranformation if available
         img = self.transform(img)
-        label = self.df.iloc[idx, 2]
+        label = (self.df.iloc[idx, 2], self.df.iloc[idx, 1])
         # return the image and associated one-hot encoded label
         label_dict = {
-                    "Fe" : [1,0],
-                    "X-ray" : [0,1] # TODO: look into pandas getdummies
-                }
+            ("Fe", 0.0): [1, 0, 0, 0, 0, 0],
+            ("Fe", 0.3): [0, 1, 0, 0, 0, 0],
+            ("Fe", 0.82): [0, 0, 1, 0, 0, 0],
+            ("X-ray", 0.0): [0, 0, 0, 1, 0, 0],
+            ("X-ray", 0.1): [0, 0, 0, 0, 1, 0],
+            ("X-ray", 1.0): [0, 0, 0, 0, 0, 1]
+        }
         
         label_tensor = torch.tensor(label_dict[label], dtype=torch.float32)
 
@@ -184,7 +188,7 @@ def main():
 
     #### testing dataset class ####
     train_csv_path = 'meta_dose_hi_hr_4_post_exposure_train.csv'
-    training_bps = BPSMouseDatasetLocal(train_csv_path, '../data/processed', transform=None, file_on_prem=True)
+    training_bps = BPSMouseDataset(train_csv_path, '../data/processed', transform=None, file_on_prem=True)
     print(training_bps.__len__())
     print(training_bps.__getitem__(0))
 
