@@ -150,7 +150,7 @@ class BPSClassifier(pl.LightningModule):
     """
     Classifier for BPS dataset
     """
-    def __init__(self, learning_rate):
+    def __init__(self):
         super().__init__()
         self.model = LeNet5()
         if torch.cuda.is_available():
@@ -158,7 +158,7 @@ class BPSClassifier(pl.LightningModule):
         self.val_acc = Accuracy(task='binary',
                                 num_classes=2,
                                 multidim_average='global')
-        self.learning_rate = learning_rate
+        # self.learning_rate = learning_rate
         
 
     def forward(self, x: torch.Tensor):
@@ -188,7 +188,8 @@ class BPSClassifier(pl.LightningModule):
         return self(batch)
 
     def configure_optimizers(self):
-        optimizer = optim.Adam(self.parameters(), lr=self.learning_rate)
+        # optimizer = optim.Adam(self.parameters(), lr=self.learning_rate)
+        optimizer = optim.Adam(self.parameters())
         #to-do: pytorch lighting scheduler option here (LearningRateMonitor)
         # https://lightning.ai/docs/pytorch/stable/common/optimization.html#learning-rate-scheduling
         return optimizer
@@ -246,7 +247,8 @@ def main():
     bps_datamodule.setup(stage='validate')
     
     # model
-    autoencoder = BPSClassifier(learning_rate = wandb.config.lr)
+    # autoencoder = BPSClassifier(learning_rate = wandb.config.lr)
+    autoencoder = BPSClassifier()
 
     # train model with training and validation dataloaders
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
@@ -280,7 +282,7 @@ def main():
 
 if __name__ == "__main__":
     sweep_config = {
-        'method': 'random',
+        'method': 'grid',
         'name': 'sweep',
         'metric': {
             'goal': 'minimize', 
@@ -289,7 +291,6 @@ if __name__ == "__main__":
         'parameters': {
             'batch_size': {'values': [16, 32, 64]},
             'epochs': {'values': [5, 10, 15]},
-            'lr': {'max': 0.1, 'min': 0.0005}
         }
     }
         
@@ -298,6 +299,6 @@ if __name__ == "__main__":
     sweep_id = wandb.sweep(
             sweep=sweep_config,
             project="SAP-lnet-from-scratch"
-        )
+    )
 
     wandb.agent(sweep_id = sweep_id, function=main, count=10)
