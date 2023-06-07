@@ -33,3 +33,65 @@
 2023-06-06 17:50:03,859 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\requirements.txt
 2023-06-06 17:50:03,860 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\conda-environment.yaml
 2023-06-06 17:50:03,860 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\wandb-summary.json
+2023-06-06 17:50:12,562 DEBUG   HandlerThread:31084 [system_info.py:_save_conda():86] Saving conda packages done
+2023-06-06 17:50:12,563 INFO    HandlerThread:31084 [system_monitor.py:probe():216] Finished publishing system info
+2023-06-06 17:50:12,588 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:50:12,588 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: keepalive
+2023-06-06 17:50:12,589 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:50:12,589 DEBUG   SenderThread:31084 [sender.py:send():375] send: files
+2023-06-06 17:50:12,589 INFO    SenderThread:31084 [sender.py:_save_file():1378] saving file wandb-metadata.json with policy now
+2023-06-06 17:50:12,605 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-06 17:50:12,605 DEBUG   SenderThread:31084 [sender.py:send_request():402] send_request: stop_status
+2023-06-06 17:50:12,943 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\conda-environment.yaml
+2023-06-06 17:50:12,943 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\wandb-metadata.json
+2023-06-06 17:50:13,173 DEBUG   SenderThread:31084 [sender.py:send():375] send: telemetry
+2023-06-06 17:50:13,603 INFO    wandb-upload_0:31084 [upload_job.py:push():137] Uploaded file C:\Users\dhpng\AppData\Local\Temp\tmpxn4awwslwandb\bpmtg0ja-wandb-metadata.json
+2023-06-06 17:50:13,955 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\output.log
+2023-06-06 17:50:15,978 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\output.log
+2023-06-06 17:50:16,993 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\output.log
+2023-06-06 17:50:17,989 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:50:23,036 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:50:27,616 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-06 17:50:27,617 DEBUG   SenderThread:31084 [sender.py:send_request():402] send_request: stop_status
+2023-06-06 17:50:28,707 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:50:33,765 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:50:34,180 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\config.yaml
+2023-06-06 17:50:38,939 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:50:42,619 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-06 17:50:42,619 DEBUG   SenderThread:31084 [sender.py:send_request():402] send_request: stop_status
+2023-06-06 17:50:44,715 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:50:49,776 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:50:54,821 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:50:57,622 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-06 17:50:57,622 DEBUG   SenderThread:31084 [sender.py:send_request():402] send_request: stop_status
+2023-06-06 17:51:00,732 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:51:03,534 DEBUG   SystemMonitor:31084 [system_monitor.py:_start():159] Starting system metrics aggregation loop
+2023-06-06 17:51:03,535 DEBUG   SenderThread:31084 [sender.py:send():375] send: stats
+2023-06-06 17:51:06,572 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:51:11,631 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:51:12,618 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-06 17:51:12,618 DEBUG   SenderThread:31084 [sender.py:send_request():402] send_request: stop_status
+2023-06-06 17:51:16,729 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:51:21,691 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\output.log
+2023-06-06 17:51:21,818 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:51:22,497 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-06 17:51:22,498 DEBUG   SenderThread:31084 [sender.py:send():375] send: history
+2023-06-06 17:51:22,499 DEBUG   SenderThread:31084 [sender.py:send_request():402] send_request: summary_record
+2023-06-06 17:51:22,500 INFO    SenderThread:31084 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-06 17:51:22,504 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-06 17:51:22,505 DEBUG   SenderThread:31084 [sender.py:send():375] send: history
+2023-06-06 17:51:22,505 DEBUG   SenderThread:31084 [sender.py:send_request():402] send_request: summary_record
+2023-06-06 17:51:22,507 INFO    SenderThread:31084 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-06 17:51:22,702 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\wandb-summary.json
+2023-06-06 17:51:23,715 INFO    Thread-16 :31084 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\dhpng\cs175\final-project-supervise-me\models\SAP_model\wandb\run-20230606_175002-3c0q1ccn\files\output.log
+2023-06-06 17:51:27,559 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:51:27,621 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-06 17:51:27,621 DEBUG   SenderThread:31084 [sender.py:send_request():402] send_request: stop_status
+2023-06-06 17:51:32,754 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:51:33,545 DEBUG   SenderThread:31084 [sender.py:send():375] send: stats
+2023-06-06 17:51:38,599 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:51:42,621 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-06 17:51:42,621 DEBUG   SenderThread:31084 [sender.py:send_request():402] send_request: stop_status
+2023-06-06 17:51:43,715 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:51:48,777 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
+2023-06-06 17:51:53,835 DEBUG   HandlerThread:31084 [handler.py:handle_request():144] handle_request: status_report
