@@ -153,6 +153,8 @@ class BPSClassifier(pl.LightningModule):
     def __init__(self, learning_rate):
         super().__init__()
         self.model = LeNet5()
+        if torch.cuda.is_available():
+            self.model.to('cuda')
         self.val_acc = Accuracy(task='binary',
                                 num_classes=2,
                                 multidim_average='global')
