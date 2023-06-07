@@ -220,15 +220,10 @@ def main():
     wandb.init(
     # set the wandb project where this run will be logged
     project="SAP-lnet-from-scratch",
-    dir=my_settings.save_dir,
-    # track hyperparameters and run metadata
+    dir=my_settings.save_dir
     )
     
-    # print("------PRINTING WANDB.CONFIG--------")
-    # print(wandb.config)
-    # print("-----------------------------------")
-    # Define training dataloader
-
+    # Define datamodule
     bps_datamodule = BPSDataModule(train_csv_file=my_settings.train_meta_fname,
                                    train_dir=my_settings.data_dir,
                                    val_csv_file=my_settings.val_meta_fname,
@@ -297,7 +292,7 @@ if __name__ == "__main__":
     }
         
 
-        #starting the sweep
+    #starting the sweep
     sweep_id = wandb.sweep(
             sweep=sweep_config,
             project="SAP-lnet-from-scratch"
