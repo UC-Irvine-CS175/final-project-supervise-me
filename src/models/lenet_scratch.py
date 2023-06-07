@@ -17,6 +17,8 @@ import sys
 sys.path.append(str(root))
 from sklearn.metrics import accuracy_score
 from src.dataset.bps_dataset import BPSMouseDataset
+from src.dataset.bps_datamodule import BPSDataModule
+
 from torchmetrics import Accuracy
 from src.dataset.augmentation import(
     NormalizeBPS,
@@ -34,6 +36,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import transforms, utils
 from torch.utils.data import Dataset, DataLoader
+
 import pytorch_lightning as pl
 
 import boto3
@@ -81,6 +84,10 @@ class BPSConfig:
     max_epochs:         int = 10
     accelerator:        str = 'auto'
     devices:            int = 1
+    num_workers:        int = 4
+    bucket_name:        str = "nasa-bps-training-data"
+    s3_path:            str = "Microscopy/train"
+    s3_client:          str = boto3.client('s3', config=Config(signature_version=UNSIGNED))
 
 class LeNet5(nn.Module):
     """
@@ -157,6 +164,7 @@ class BPSClassifier(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self.model(x)
+        y = torch.argmax(y, dim=1) # Fe: [1, 0]-> 0, X-ray: [0, 1] -> 1
         loss = F.cross_entropy(y_hat, y)
         # self.log('train_loss', loss)            # Tensorboard
         wandb.log({'train_loss' : loss})        # Weights and Biases
@@ -165,10 +173,9 @@ class BPSClassifier(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self.model(x)
-        val_loss = F.cross_entropy(y_hat, y)
+        y_truth = torch.argmax(y, dim=1)
         y_pred = torch.argmax(y_hat, dim=1)
-        y_truth = y
-
+        val_loss = F.cross_entropy(y_hat, y)
         # Accuracy is the average of the number of an entire batch of correct predictions
         val_acc = torch.mean((torch.eq(y_pred, y_truth)).float())
         # self.log('val_loss', val_loss)          # Tensorboard
@@ -220,38 +227,26 @@ def main():
     # print(wandb.config)
     # print("-----------------------------------")
     # Define training dataloader
+
+    bps_datamodule = BPSDataModule(train_csv_file=my_settings.train_meta_fname,
+                                   train_dir=my_settings.data_dir,
+                                   val_csv_file=my_settings.val_meta_fname,
+                                   val_dir=my_settings.data_dir,
+                                   batch_size=wandb.config.batch_size,
+                                   num_workers=my_settings.num_workers,
+                                   s3_client= my_settings.s3_client,
+                                   bucket_name= my_settings.bucket_name,
+                                   s3_path= my_settings.s3_path)
     
-     # Define training dataset
-    train_dataset = BPSMouseDataset(my_settings.train_meta_fname,
-                                    my_settings.data_dir,
-                                    transform=transforms.Compose([
-                                        NormalizeBPS(),
-                                        ResizeBPS(224, 224),
-                                        VFlipBPS(),
-                                        HFlipBPS(),
-                                        RotateBPS(90),
-                                        RandomCropBPS(200, 200),
-                                        ToTensor()]),
-                                    file_on_prem=True)
-    train_loader = DataLoader(train_dataset, batch_size=16,
-                              shuffle=False, num_workers= 4)
-
-    # Define validation dataset
-    validate_dataset = BPSMouseDataset(my_settings.val_meta_fname,
-                                       my_settings.data_dir,
-                                       transform=transforms.Compose([
-                                            NormalizeBPS(),
-                                            ResizeBPS(224, 224),
-                                            VFlipBPS(),
-                                            HFlipBPS(),
-                                            RotateBPS(90),
-                                            RandomCropBPS(200, 200),
-                                            ToTensor()]),
-                                        file_on_prem=True)
-
-    # Define validation dataloader
-    validate_dataloader = DataLoader(validate_dataset, batch_size=16,
-                                     shuffle=False, num_workers= 4)
+    ##### UNCOMMENT THE LINE BELOW TO DOWNLOAD DATA FROM S3!!! #####
+    #bps_datamodule.prepare_data()
+    ##### WHEN YOU ARE DONE REMEMBER TO COMMENT THE LINE ABOVE TO AVOID
+    ##### DOWNLOADING THE DATA AGAIN!!! #####
+    
+    # Using BPSDataModule's setup, define the stage name ('train' or 'val')
+    bps_datamodule.setup(stage='train')
+    bps_datamodule.setup(stage='validate')
+    
     # model
     autoencoder = BPSClassifier()
 
@@ -259,19 +254,19 @@ def main():
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
                          accelerator=my_settings.accelerator,
                          devices=my_settings.devices,
-                         max_epochs=5,
+                         max_epochs=wandb.config.epochs,
                          profiler="simple")
 
     trainer.fit(model=autoencoder,
-                train_dataloaders=train_loader,
-                val_dataloaders=validate_dataloader)
+                train_dataloaders=bps_datamodule.train_dataloader(),
+                val_dataloaders=bps_datamodule.val_dataloader())
 
     # test model
     # Automate saving checkpoints from training with this assignment
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
                          accelerator=my_settings.accelerator,
                          devices=my_settings.devices,
-                         max_epochs=5)
+                         max_epochs=wandb.config.epochs)
     
     # # Load checkpoint from training
     # model = BPSAutoEncoder.load_from_checkpoint(config.save_dir + 'lightning_logs/version_0/checkpoints/epoch=9.ckpt')
@@ -285,32 +280,27 @@ def main():
     wandb.finish()
     
 
-"""
-sweep_config = {
-    'method': 'grid',
-    'name': 'sweep',
-    'run_cap': 1,
-    'metric': {
-        'goal': 'minimize', 
-        'name': 'train_loss'
-        },
-    'parameters': {
-        'batch_size': {'values': [16, 32, 64]},
-        'epochs': {'values': [5, 10, 15]},
-        # 'lr': {'max': 0.1, 'min': 0.0001}
-     }
-    }
-    
-
-    #starting the sweep
-sweep_id = wandb.sweep(
-        sweep=sweep_config,
-        project="SAP-lnet-from-scratch"
-    )
-
-wandb.agent(sweep_id = sweep_id, function=main, count=10)
-
-"""
-
 if __name__ == "__main__":
-    main()
+    sweep_config = {
+        'method': 'grid',
+        'name': 'sweep',
+        'run_cap': 1,
+        'metric': {
+            'goal': 'minimize', 
+            'name': 'train_loss'
+            },
+        'parameters': {
+            'batch_size': {'values': [16, 32, 64]},
+            'epochs': {'values': [5, 10, 15]},
+            # 'lr': {'max': 0.1, 'min': 0.0001}
+        }
+        }
+        
+
+        #starting the sweep
+    sweep_id = wandb.sweep(
+            sweep=sweep_config,
+            project="SAP-lnet-from-scratch"
+        )
+
+    wandb.agent(sweep_id = sweep_id, function=main, count=10)

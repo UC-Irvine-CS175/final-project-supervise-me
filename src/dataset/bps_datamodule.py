@@ -34,6 +34,10 @@ from src.dataset.bps_dataset import BPSMouseDataset
 from src.dataset.augmentation import (
     NormalizeBPS,
     ResizeBPS,
+    VFlipBPS,
+    HFlipBPS,
+    RotateBPS,
+    RandomCropBPS,
     ToTensor
 )
 
@@ -45,7 +49,6 @@ class BPSDataModule(pl.LightningDataModule):
                  train_dir: str,
                  val_csv_file: str,
                  val_dir: str,
-                 resize_dims: tuple,
                  test_csv_file: str = None,
                  test_dir: str = None,
                  file_on_prem: bool = True,
@@ -89,10 +92,13 @@ class BPSDataModule(pl.LightningDataModule):
         self.on_prem = file_on_prem
         self.meta_csv = meta_csv_file
         self.meta_dir = meta_root_dir
-        self.resize_dims = resize_dims
         self.transform = transforms.Compose([
                             NormalizeBPS(),
-                            ResizeBPS(resize_dims[0], resize_dims[1]),
+                            ResizeBPS(224, 224),
+                            VFlipBPS(),
+                            HFlipBPS(),
+                            RotateBPS(90),
+                            RandomCropBPS(200, 200),
                             ToTensor()
                 ])
         self.on_prem = file_on_prem
