@@ -150,12 +150,13 @@ class BPSClassifier(pl.LightningModule):
     """
     Classifier for BPS dataset
     """
-    def __init__(self):
+    def __init__(self, learning_rate):
         super().__init__()
         self.model = LeNet5()
         self.val_acc = Accuracy(task='binary',
                                 num_classes=2,
                                 multidim_average='global')
+        self.learning_rate = learning_rate
         
 
     def forward(self, x: torch.Tensor):
@@ -185,7 +186,7 @@ class BPSClassifier(pl.LightningModule):
         return self(batch)
 
     def configure_optimizers(self):
-        optimizer = optim.Adam(self.parameters(), lr=3e-4)
+        optimizer = optim.Adam(self.parameters(), lr=self.learning_rate)
         #to-do: pytorch lighting scheduler option here (LearningRateMonitor)
         # https://lightning.ai/docs/pytorch/stable/common/optimization.html#learning-rate-scheduling
         return optimizer
@@ -248,7 +249,7 @@ def main():
     bps_datamodule.setup(stage='validate')
     
     # model
-    autoencoder = BPSClassifier()
+    autoencoder = BPSClassifier(learning_rate = wandb.config.lr)
 
     # train model with training and validation dataloaders
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
@@ -282,9 +283,8 @@ def main():
 
 if __name__ == "__main__":
     sweep_config = {
-        'method': 'grid',
+        'method': 'random',
         'name': 'sweep',
-        'run_cap': 1,
         'metric': {
             'goal': 'minimize', 
             'name': 'train_loss'
@@ -292,9 +292,9 @@ if __name__ == "__main__":
         'parameters': {
             'batch_size': {'values': [16, 32, 64]},
             'epochs': {'values': [5, 10, 15]},
-            # 'lr': {'max': 0.1, 'min': 0.0001}
+            'lr': {'max': 0.1, 'min': 0.0005}
         }
-        }
+    }
         
 
         #starting the sweep
