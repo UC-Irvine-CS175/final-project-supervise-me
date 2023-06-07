@@ -150,7 +150,7 @@ class BPSClassifier(pl.LightningModule):
     """
     Classifier for BPS dataset
     """
-    def __init__(self):
+    def __init__(self, learning_rate):
         super().__init__()
         self.model = LeNet5()
         if torch.cuda.is_available():
@@ -158,7 +158,7 @@ class BPSClassifier(pl.LightningModule):
         self.val_acc = Accuracy(task='binary',
                                 num_classes=2,
                                 multidim_average='global')
-        # self.learning_rate = learning_rate
+        self.learning_rate = learning_rate
         
 
     def forward(self, x: torch.Tensor):
@@ -188,8 +188,7 @@ class BPSClassifier(pl.LightningModule):
         return self(batch)
 
     def configure_optimizers(self):
-        # optimizer = optim.Adam(self.parameters(), lr=self.learning_rate)
-        optimizer = optim.Adam(self.parameters())
+        optimizer = optim.Adam(self.parameters(), lr=self.learning_rate)
         #to-do: pytorch lighting scheduler option here (LearningRateMonitor)
         # https://lightning.ai/docs/pytorch/stable/common/optimization.html#learning-rate-scheduling
         return optimizer
@@ -226,6 +225,7 @@ def main():
     dir=my_settings.save_dir
     )
     
+    """
     # Define datamodule
     bps_datamodule = BPSDataModule(train_csv_file=my_settings.train_meta_fname,
                                    train_dir=my_settings.data_dir,
@@ -245,10 +245,44 @@ def main():
     # Using BPSDataModule's setup, define the stage name ('train' or 'val')
     bps_datamodule.setup(stage='train')
     bps_datamodule.setup(stage='validate')
+    """
+    # Define training dataset
+    train_dataset = BPSMouseDataset(my_settings.train_meta_fname,
+                                    my_settings.data_dir,
+                                    transform=transforms.Compose([
+                                        NormalizeBPS(),
+                                        ResizeBPS(224, 224),
+                                        VFlipBPS(),
+                                        HFlipBPS(),
+                                        RotateBPS(90),
+                                        RandomCropBPS(200, 200),
+                                        ToTensor()]),
+                                    file_on_prem=True)
+
+    # Define training dataloader
+    train_loader = DataLoader(train_dataset, batch_size=wandb.config.batch_size,
+                              shuffle=False, num_workers= 4)
+
+
+    # Define validation dataset
+    validate_dataset = BPSMouseDataset(my_settings.val_meta_fname,
+                                       my_settings.data_dir,
+                                       transform=transforms.Compose([
+                                            NormalizeBPS(),
+                                            ResizeBPS(224, 224),
+                                            VFlipBPS(),
+                                            HFlipBPS(),
+                                            RotateBPS(90),
+                                            RandomCropBPS(200, 200),
+                                            ToTensor()]),
+                                        file_on_prem=True)
+
+    # Define validation dataloader
+    validate_dataloader = DataLoader(validate_dataset, batch_size=wandb.config.batch_size,
+                                     shuffle=False, num_workers= 4)
     
     # model
-    # autoencoder = BPSClassifier(learning_rate = wandb.config.lr)
-    autoencoder = BPSClassifier()
+    autoencoder = BPSClassifier(learning_rate = wandb.config.lr)
 
     # train model with training and validation dataloaders
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
@@ -258,8 +292,8 @@ def main():
                          profiler="simple")
 
     trainer.fit(model=autoencoder,
-                train_dataloaders=bps_datamodule.train_dataloader(),
-                val_dataloaders=bps_datamodule.val_dataloader())
+                train_dataloaders=train_loader,
+                val_dataloaders=validate_dataloader)
 
     # test model
     # Automate saving checkpoints from training with this assignment
@@ -282,7 +316,7 @@ def main():
 
 if __name__ == "__main__":
     sweep_config = {
-        'method': 'grid',
+        'method': 'random',
         'name': 'sweep',
         'metric': {
             'goal': 'minimize', 
@@ -291,6 +325,7 @@ if __name__ == "__main__":
         'parameters': {
             'batch_size': {'values': [16, 32, 64]},
             'epochs': {'values': [5, 10, 15]},
+            'lr': {'max': 0.1, 'min': 0.0005}
         }
     }
         
@@ -299,6 +334,6 @@ if __name__ == "__main__":
     sweep_id = wandb.sweep(
             sweep=sweep_config,
             project="SAP-lnet-from-scratch"
-    )
+        )
 
     wandb.agent(sweep_id = sweep_id, function=main, count=10)
