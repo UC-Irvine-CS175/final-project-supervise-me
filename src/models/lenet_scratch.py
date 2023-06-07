@@ -165,7 +165,7 @@ class BPSClassifier(pl.LightningModule):
         y_hat = self.model(x)
         y = torch.tensor([self.label_dict[i] for i in y])
         if torch.cuda.is_available():  
-            y.to('cuda')
+            y = y.to('cuda')
         loss = F.cross_entropy(y_hat, y)
         # self.log('train_loss', loss)            # Tensorboard
         wandb.log({'train_loss' : loss})        # Weights and Biases
@@ -176,7 +176,7 @@ class BPSClassifier(pl.LightningModule):
         y_hat = self.model(x)
         y = torch.tensor([self.label_dict[i] for i in y])
         if torch.cuda.is_available():
-            y.to('cuda')
+            y = y.to('cuda')
         val_loss = F.cross_entropy(y_hat, y)
         y_pred = torch.argmax(y_hat, dim=1)
         y_truth = y
@@ -295,15 +295,13 @@ def main():
     # # Define test dataset
 
     # # Define test dataloader
-    wandb.finish()
 
 
 
 if __name__ == "__main__":
     sweep_config = {
-    'method': 'grid',
+    'method': 'random',
     'name': 'sweep',
-    'run_cap': 1,
     'metric': {
         'goal': 'minimize', 
         'name': 'train_loss'
@@ -311,7 +309,7 @@ if __name__ == "__main__":
     'parameters': {
         'batch_size': {'values': [16, 32, 64]},
         'epochs': {'values': [5, 10, 15]},
-        #'lr': {'max': 0.1, 'min': 0.0001}
+        'lr': {'max': 0.1, 'min': 0.0001}
      }
     }
     
@@ -320,6 +318,6 @@ if __name__ == "__main__":
     sweep_id = wandb.sweep(
             sweep=sweep_config,
             project="SAP-lnet-from-scratch"
-        )
+    )
 
-    wandb.agent(sweep_id = sweep_id, function=main, count=10)
+    wandb.agent(sweep_id=sweep_id, function=main, count=10)
