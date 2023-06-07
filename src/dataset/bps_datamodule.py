@@ -34,6 +34,7 @@ from src.dataset.bps_dataset import BPSMouseDataset
 from src.dataset.augmentation import (
     NormalizeBPS,
     ResizeBPS,
+    ToThreeChannels,
     ToTensor
 )
 
@@ -50,7 +51,7 @@ class BPSDataModule(pl.LightningDataModule):
                  test_dir: str = None,
                  file_on_prem: bool = True,
                  batch_size: int = 4,
-                 num_workers: int = 2,
+                 num_workers: int = 12,
                  meta_csv_file: str = None,
                  meta_root_dir: str = None,
                  s3_client: boto3.client = None,
@@ -93,7 +94,8 @@ class BPSDataModule(pl.LightningDataModule):
         self.transform = transforms.Compose([
                             NormalizeBPS(),
                             ResizeBPS(resize_dims[0], resize_dims[1]),
-                            ToTensor()
+                            ToThreeChannels(),
+                            ToTensor(),
                 ])
         self.on_prem = file_on_prem
         self.batch_size = batch_size
@@ -206,7 +208,7 @@ def main():
                            s3_path=s3_path,
                            )
     ##### UNCOMMENT THE LINE BELOW TO DOWNLOAD DATA FROM S3!!! #####
-    #bps_dm.prepare_data()
+    # bps_dm.prepare_data()
     ##### WHEN YOU ARE DONE REMEMBER TO COMMENT THE LINE ABOVE TO AVOID
     ##### DOWNLOADING THE DATA AGAIN!!! #####
     bps_dm.setup(stage='train')

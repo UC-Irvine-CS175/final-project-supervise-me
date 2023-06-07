@@ -113,6 +113,20 @@ class RandomCropBPS(object):
         return image[top:bottom, left:right]
         #raise NotImplementedError
 
+class ToThreeChannels(object):
+    """convert greyscale to rgb image"""
+    def __call__(self, image: np.ndarray) -> np.ndarray:
+        """
+        Convert the image to three channels
+
+        args:
+            img (np.ndarray): image to be converted to three channels.
+        returns:
+            torch.Tensor: image with three channels.
+        """
+        img_three_channels = np.repeat(image[..., np.newaxis], 3, -1)
+        return img_three_channels
+
 class ToTensor(object):
     """Convert ndarrays in sample to Tensors."""
     def __call__(self, image: np.ndarray) -> torch.Tensor:
