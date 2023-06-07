@@ -246,7 +246,7 @@ def main():
                                         RandomCropBPS(200, 200),
                                         ToTensor()]),
                                     file_on_prem=True)
-    train_loader = DataLoader(train_dataset, batch_size=16,
+    train_loader = DataLoader(train_dataset, batch_size=wandb.config.batch_size,
                               shuffle=False, num_workers= 4)
 
     # Define validation dataset
@@ -263,7 +263,7 @@ def main():
                                         file_on_prem=True)
 
     # Define validation dataloader
-    validate_dataloader = DataLoader(validate_dataset, batch_size=16,
+    validate_dataloader = DataLoader(validate_dataset, batch_size=wandb.config.batch_size,
                                      shuffle=False, num_workers= 4)
     # model
     autoencoder = BPSClassifier()
@@ -272,7 +272,7 @@ def main():
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
                          accelerator=my_settings.accelerator,
                          devices=my_settings.devices,
-                         max_epochs=5,
+                         max_epochs=wandb.config.epochs,
                          profiler="simple")
 
     trainer.fit(model=autoencoder,
@@ -284,7 +284,7 @@ def main():
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
                          accelerator=my_settings.accelerator,
                          devices=my_settings.devices,
-                         max_epochs=5)
+                         max_epochs=wandb.config.epochs)
     
     # # Load checkpoint from training
     # model = BPSAutoEncoder.load_from_checkpoint(config.save_dir + 'lightning_logs/version_0/checkpoints/epoch=9.ckpt')
@@ -310,6 +310,19 @@ if __name__ == "__main__":
         'batch_size': {'values': [16, 32, 64]},
         'epochs': {'values': [5, 10, 15]},
         'lr': {'max': 0.1, 'min': 0.0001}
+     }
+    }
+
+    sweep_config2 = {
+    'method': 'grid',
+    'name': 'sweep',
+    'metric': {
+        'goal': 'minimize', 
+        'name': 'train_loss'
+        },
+    'parameters': {
+        'batch_size': {'values': [16, 32, 64]},
+        'epochs': {'values': [5, 10, 15]},
      }
     }
     

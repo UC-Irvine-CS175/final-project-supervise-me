@@ -21,3 +21,155 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
 
 Epoch 0: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 444/444 [00:37<00:00, 11.77it/s, v_num=14]
 
+
+
+
+
+Epoch 1: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 444/444 [00:39<00:00, 11.35it/s, v_num=14]
+
+
+
+
+
+Epoch 2: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 444/444 [00:36<00:00, 12.28it/s, v_num=14]
+
+
+
+
+
+Epoch 3: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 444/444 [00:35<00:00, 12.38it/s, v_num=14]
+
+
+
+
+
+Epoch 4: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 444/444 [00:35<00:00, 12.35it/s, v_num=14]
+
+
+`Trainer.fit` stopped: `max_epochs=5` reached.
+FIT Profiler Report
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|  Action                                                                                                                                                         	|  Mean duration (s)	|  Num calls      	|  Total time (s) 	|  Percentage %   	|
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|  Total                                                                                                                                                          	|  -              	|  87940          	|  458.75         	|  100 %          	|
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|  run_training_epoch                                                                                                                                             	|  70.275         	|  5              	|  351.37         	|  76.594         	|
+|  run_training_batch                                                                                                                                             	|  0.0070968      	|  2220           	|  15.755         	|  3.4343         	|
+|  [LightningModule]BPSClassifier.optimizer_step                                                                                                                  	|  0.0069279      	|  2220           	|  15.38          	|  3.3526         	|
+|  [Strategy]SingleDeviceStrategy.training_step                                                                                                                   	|  0.0027689      	|  2220           	|  6.147          	|  1.3399         	|
+|  [Strategy]SingleDeviceStrategy.backward                                                                                                                        	|  0.0023396      	|  2220           	|  5.194          	|  1.1322         	|
+|  [Strategy]SingleDeviceStrategy.batch_to_device                                                                                                                 	|  0.001803       	|  2777           	|  5.007          	|  1.0914         	|
+|  [LightningModule]BPSClassifier.transfer_batch_to_device                                                                                                        	|  0.0017123      	|  2777           	|  4.755          	|  1.0365         	|
+|  [Callback]TQDMProgressBar.on_train_batch_end                                                                                                                   	|  0.0015698      	|  2220           	|  3.485          	|  0.75967        	|
+|  [Strategy]SingleDeviceStrategy.validation_step                                                                                                                 	|  0.0062154      	|  557            	|  3.462          	|  0.75466        	|
+|  [_EvaluationLoop].val_next                                                                                                                                     	|  0.0031093      	|  558            	|  1.735          	|  0.3782         	|
+|  [_TrainingEpochLoop].train_dataloader_next                                                                                                                     	|  0.00056261     	|  2220           	|  1.249          	|  0.27226        	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_train_epoch_end       	|  0.2126         	|  5              	|  1.063          	|  0.23172        	|
+|  [Callback]TQDMProgressBar.on_validation_batch_end                                                                                                              	|  0.0014955      	|  557            	|  0.833          	|  0.18158        	|
+|  [LightningModule]BPSClassifier.optimizer_zero_grad                                                                                                             	|  0.00011216     	|  2220           	|  0.249          	|  0.054278       	|
+|  [LightningModule]BPSClassifier.configure_gradient_clipping                                                                                                     	|  6.3514e-05     	|  2220           	|  0.141          	|  0.030736       	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_train_batch_end       	|  4.1892e-05     	|  2220           	|  0.093          	|  0.020272       	|
+|  [Callback]TQDMProgressBar.on_after_backward                                                                                                                    	|  1.4414e-05     	|  2220           	|  0.032          	|  0.0069755      	|
+|  [Callback]ModelSummary.on_before_backward                                                                                                                      	|  1.3964e-05     	|  2220           	|  0.031          	|  0.0067575      	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_after_backward        	|  1.3964e-05     	|  2220           	|  0.031          	|  0.0067575      	|
+|  [Callback]TQDMProgressBar.on_train_epoch_start                                                                                                                 	|  0.0032         	|  5              	|  0.016          	|  0.0034877      	|
+|  [LightningModule]BPSClassifier.on_before_zero_grad                                                                                                             	|  7.2072e-06     	|  2220           	|  0.016          	|  0.0034877      	|
+|  [Callback]TQDMProgressBar.on_sanity_check_start                                                                                                                	|  0.016          	|  1              	|  0.016          	|  0.0034877      	|
+|  [Callback]TQDMProgressBar.on_validation_end                                                                                                                    	|  0.0026667      	|  6              	|  0.016          	|  0.0034877      	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_train_batch_start     	|  7.2072e-06     	|  2220           	|  0.016          	|  0.0034877      	|
+|  [Callback]TQDMProgressBar.on_before_backward                                                                                                                   	|  7.2072e-06     	|  2220           	|  0.016          	|  0.0034877      	|
+|  [Callback]ModelSummary.on_train_batch_end                                                                                                                      	|  7.2072e-06     	|  2220           	|  0.016          	|  0.0034877      	|
+|  [Callback]TQDMProgressBar.on_validation_batch_start                                                                                                            	|  2.693e-05      	|  557            	|  0.015          	|  0.0032698      	|
+|  [Callback]ModelSummary.on_train_batch_start                                                                                                                    	|  6.7568e-06     	|  2220           	|  0.015          	|  0.0032698      	|
+|  [Callback]TQDMProgressBar.on_before_optimizer_step                                                                                                             	|  6.7568e-06     	|  2220           	|  0.015          	|  0.0032698      	|
+|  [LightningModule]BPSClassifier.on_train_batch_start                                                                                                            	|  6.7568e-06     	|  2220           	|  0.015          	|  0.0032698      	|
+|  [LightningModule]BPSClassifier.configure_callbacks                                                                                                             	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.prepare_data                                                                                                                    	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.setup                                                                                                                                	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.setup                                                                                                                                   	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.setup                    	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.setup                                                                                                                           	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.configure_sharded_model                                                                                                         	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.configure_optimizers                                                                                                            	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_fit_start                                                                                                                         	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_fit_start                                                                                                                            	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_fit_start             	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_fit_start                                                                                                                    	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_sanity_check_start                                                                                                                   	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_sanity_check_start    	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_validation_model_eval                                                                                                        	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_validation_start                                                                                                                  	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_validation_start                                                                                                                     	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_validation_start      	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_validation_start                                                                                                             	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Strategy]SingleDeviceStrategy.on_validation_start                                                                                                             	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_validation_epoch_start                                                                                                            	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_validation_epoch_start                                                                                                               	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_validation_epoch_start	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_validation_epoch_start                                                                                                       	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_before_batch_transfer                                                                                                        	|  0.0            	|  2777           	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_after_batch_transfer                                                                                                         	|  0.0            	|  2777           	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_validation_batch_start                                                                                                               	|  0.0            	|  557            	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_validation_batch_start	|  0.0            	|  557            	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_validation_batch_start                                                                                                       	|  0.0            	|  557            	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_validation_batch_end                                                                                                                 	|  0.0            	|  557            	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_validation_batch_end  	|  0.0            	|  557            	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_validation_batch_end                                                                                                         	|  0.0            	|  557            	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_validation_epoch_end                                                                                                              	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_validation_epoch_end                                                                                                                 	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_validation_epoch_end  	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_validation_epoch_end                                                                                                         	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_validation_end                                                                                                                       	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_validation_end        	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_validation_end                                                                                                               	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Strategy]SingleDeviceStrategy.on_validation_end                                                                                                               	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_validation_model_train                                                                                                       	|  0.0            	|  6              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_sanity_check_end                                                                                                                  	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_sanity_check_end                                                                                                                     	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_sanity_check_end      	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_train_start                                                                                                                       	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_train_start                                                                                                                          	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_train_start           	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_train_start                                                                                                                  	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Strategy]SingleDeviceStrategy.on_train_start                                                                                                                  	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_train_epoch_start                                                                                                                    	|  0.0            	|  5              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_train_epoch_start     	|  0.0            	|  5              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_train_epoch_start                                                                                                            	|  0.0            	|  5              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_train_batch_start                                                                                                                 	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [Strategy]SingleDeviceStrategy.on_train_batch_start                                                                                                            	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_before_zero_grad                                                                                                                  	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_before_zero_grad                                                                                                                     	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_before_zero_grad      	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_before_backward       	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_before_backward                                                                                                              	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_after_backward                                                                                                                       	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_after_backward                                                                                                               	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_before_optimizer_step                                                                                                                	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_before_optimizer_step 	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_before_optimizer_step                                                                                                        	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_train_batch_end                                                                                                              	|  0.0            	|  2220           	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_train_epoch_end                                                                                                                   	|  0.0            	|  5              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_train_epoch_end                                                                                                                      	|  0.0            	|  5              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_train_epoch_end                                                                                                              	|  0.0            	|  5              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_save_checkpoint                                                                                                                   	|  0.0            	|  5              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_save_checkpoint                                                                                                                      	|  0.0            	|  5              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_save_checkpoint       	|  0.0            	|  5              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_save_checkpoint                                                                                                              	|  0.0            	|  5              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_train_end                                                                                                                         	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_train_end                                                                                                                            	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_train_end             	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_train_end                                                                                                                    	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Strategy]SingleDeviceStrategy.on_train_end                                                                                                                    	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_fit_end                                                                                                                           	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_fit_end                                                                                                                              	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.on_fit_end               	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.on_fit_end                                                                                                                      	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.teardown                                                                                                                             	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.teardown                                                                                                                                	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelCheckpoint{'monitor': None, 'mode': 'min', 'every_n_train_steps': 0, 'every_n_epochs': 1, 'train_time_interval': None}.teardown                 	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]BPSClassifier.teardown                                                                                                                        	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs

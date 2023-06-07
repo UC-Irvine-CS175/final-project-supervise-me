@@ -26,3 +26,10 @@ config: {}
 2023-06-06 17:50:12,606 INFO    Thread-8 (_run_job):51180 [wandb_run.py:_redirect():2078] Wrapping output streams.
 2023-06-06 17:50:12,606 INFO    Thread-8 (_run_job):51180 [wandb_run.py:_redirect():2103] Redirects installed.
 2023-06-06 17:50:12,606 INFO    Thread-8 (_run_job):51180 [wandb_init.py:init():829] run started, returning control to user process
+2023-06-06 17:57:51,964 INFO    Thread-8 (_run_job):51180 [wandb_run.py:_finish():1893] finishing run supervise-me/SAP-lnet-from-scratch/3c0q1ccn
+2023-06-06 17:57:51,964 INFO    Thread-8 (_run_job):51180 [wandb_run.py:_atexit_cleanup():2127] got exitcode: 0
+2023-06-06 17:57:51,964 INFO    Thread-8 (_run_job):51180 [wandb_run.py:_restore():2110] restore
+2023-06-06 17:57:51,965 INFO    Thread-8 (_run_job):51180 [wandb_run.py:_restore():2116] restore done
+2023-06-06 17:57:58,842 INFO    Thread-8 (_run_job):51180 [wandb_run.py:_footer_history_summary_info():3469] rendering history
+2023-06-06 17:57:58,842 INFO    Thread-8 (_run_job):51180 [wandb_run.py:_footer_history_summary_info():3501] rendering summary
+2023-06-06 17:57:58,852 INFO    Thread-8 (_run_job):51180 [wandb_run.py:_footer_sync_info():3428] logging synced files
