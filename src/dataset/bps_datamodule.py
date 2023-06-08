@@ -80,6 +80,7 @@ class BPSDataModule(pl.LightningDataModule):
                                 (needed by BPSDataset when file_on_prem = False)
             meta_root_dir (str): The directory where the metadata is stored
                                 (needed by BPSDataset when file_on_prem = False)
+            multi_label (bool): Whether we are using a multi-label or single-label dataset 
         """
         super().__init__()
         self.train_csv = train_csv_file

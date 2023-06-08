@@ -85,7 +85,7 @@ class BPSConfig:
     max_epochs:         int = 10
     accelerator:        str = 'auto'
     devices:            int = 1
-    num_workers:        int = 4
+    num_workers:        int = 1
     bucket_name:        str = "nasa-bps-training-data"
     s3_path:            str = "Microscopy/train"
     s3_client:          str = boto3.client('s3', config=Config(signature_version=UNSIGNED))
@@ -198,7 +198,7 @@ class BPSClassifier(pl.LightningModule):
 # e.g. Fe or X-ray
 def main_original_dataset():
     """
-    Testing function for BPS AutoEncoder
+    Testing function for BPS AutoEncoder that predicts single-labels
 
         1) Define configuration options
         2) Define training dataset
@@ -236,7 +236,8 @@ def main_original_dataset():
                                    num_workers=my_settings.num_workers,
                                    s3_client= my_settings.s3_client,
                                    bucket_name= my_settings.bucket_name,
-                                   s3_path= my_settings.s3_path)
+                                   s3_path= my_settings.s3_path,
+                                   multi_label= False)
     
     ##### UNCOMMENT THE LINE BELOW TO DOWNLOAD DATA FROM S3!!! #####
     #bps_datamodule.prepare_data()
@@ -249,43 +250,7 @@ def main_original_dataset():
 
     train_loader = bps_datamodule.train_dataloader()
     val_loader = bps_datamodule.val_dataloader()
-    
-    """
-    # Define training dataset
-    train_dataset = BPSMouseDataset(my_settings.train_meta_fname,
-                                    my_settings.data_dir,
-                                    transform=transforms.Compose([
-                                        NormalizeBPS(),
-                                        ResizeBPS(224, 224),
-                                        VFlipBPS(),
-                                        HFlipBPS(),
-                                        RotateBPS(90),
-                                        RandomCropBPS(200, 200),
-                                        ToTensor()]),
-                                    file_on_prem=True)
 
-    # Define training dataloader
-    train_loader = DataLoader(train_dataset, batch_size=wandb.config.batch_size,
-                              shuffle=False, num_workers= 4)
-
-
-    # Define validation dataset
-    validate_dataset = BPSMouseDataset(my_settings.val_meta_fname,
-                                       my_settings.data_dir,
-                                       transform=transforms.Compose([
-                                            NormalizeBPS(),
-                                            ResizeBPS(224, 224),
-                                            VFlipBPS(),
-                                            HFlipBPS(),
-                                            RotateBPS(90),
-                                            RandomCropBPS(200, 200),
-                                            ToTensor()]),
-                                        file_on_prem=True)
-
-    # Define validation dataloader
-    validate_dataloader = DataLoader(validate_dataset, batch_size=wandb.config.batch_size,
-                                     shuffle=False, num_workers= 4)
-    """
     # model
     autoencoder = BPSClassifier(learning_rate = wandb.config.lr)
 
@@ -322,7 +287,7 @@ def main_original_dataset():
 # e.g. (particle-type, dosage)
 def main_multi_label_dataset():
     """
-    Testing function for BPS AutoEncoder
+    Testing function for BPS AutoEncoder that predicts multi-labels
 
         1) Define configuration options
         2) Define training dataset
@@ -360,7 +325,8 @@ def main_multi_label_dataset():
                                    num_workers=my_settings.num_workers,
                                    s3_client= my_settings.s3_client,
                                    bucket_name= my_settings.bucket_name,
-                                   s3_path= my_settings.s3_path)
+                                   s3_path= my_settings.s3_path,
+                                   multi_label= True)
     
     ##### UNCOMMENT THE LINE BELOW TO DOWNLOAD DATA FROM S3!!! #####
     # bps_datamodule.prepare_data()
@@ -373,43 +339,7 @@ def main_multi_label_dataset():
 
     train_loader = bps_datamodule.train_dataloader()
     val_loader = bps_datamodule.val_dataloader()
-    
-    """
-    # Define training dataset
-    train_dataset = BPSMouseDataset(my_settings.train_meta_fname,
-                                    my_settings.data_dir,
-                                    transform=transforms.Compose([
-                                        NormalizeBPS(),
-                                        ResizeBPS(224, 224),
-                                        VFlipBPS(),
-                                        HFlipBPS(),
-                                        RotateBPS(90),
-                                        RandomCropBPS(200, 200),
-                                        ToTensor()]),
-                                    file_on_prem=True)
 
-    # Define training dataloader
-    train_loader = DataLoader(train_dataset, batch_size=wandb.config.batch_size,
-                              shuffle=False, num_workers= 4)
-
-
-    # Define validation dataset
-    validate_dataset = BPSMouseDataset(my_settings.val_meta_fname,
-                                       my_settings.data_dir,
-                                       transform=transforms.Compose([
-                                            NormalizeBPS(),
-                                            ResizeBPS(224, 224),
-                                            VFlipBPS(),
-                                            HFlipBPS(),
-                                            RotateBPS(90),
-                                            RandomCropBPS(200, 200),
-                                            ToTensor()]),
-                                        file_on_prem=True)
-
-    # Define validation dataloader
-    validate_dataloader = DataLoader(validate_dataset, batch_size=wandb.config.batch_size,
-                                     shuffle=False, num_workers= 4)
-    """
     # model
     autoencoder = BPSClassifier(learning_rate = wandb.config.lr)
 
