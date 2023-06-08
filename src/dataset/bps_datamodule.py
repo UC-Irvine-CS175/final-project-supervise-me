@@ -30,6 +30,7 @@ from botocore import UNSIGNED
 from botocore.config import Config
 
 from src.dataset.bps_dataset import BPSMouseDataset
+from src.dataset.bps_dataset_multi_label import BPSMouseDataset as BPSMouseMultiLabel
 
 from src.dataset.augmentation import (
     NormalizeBPS,
@@ -58,7 +59,8 @@ class BPSDataModule(pl.LightningDataModule):
                  meta_root_dir: str = None,
                  s3_client: boto3.client = None,
                  s3_path: str = None,
-                 bucket_name: str = None):
+                 bucket_name: str = None,
+                 multi_label: bool = False):
         """
         PyTorch Lightning DataModule for the BPS microscopy data.
 
@@ -104,6 +106,7 @@ class BPSDataModule(pl.LightningDataModule):
         self.on_prem = file_on_prem
         self.batch_size = batch_size
         self.num_workers = num_workers
+        self.multi_label = multi_label
     
     def prepare_data(self) -> None:
         """
@@ -142,22 +145,36 @@ class BPSDataModule(pl.LightningDataModule):
         """
         if stage == "train":
             # Create the BPSMouseDataset object for the training data.
-            self.training_bps = BPSMouseDataset(self.train_csv, self.train_dir,
-                                                self.s3_client, self.bucket_name,
-                                                self.transform, self.on_prem)
+            if self.multi_label:
+                self.training_bps = BPSMouseMultiLabel(self.train_csv, self.train_dir,
+                                                       self.s3_client, self.bucket_name,
+                                                       self.transform, self.on_prem)
+            else:
+                self.training_bps = BPSMouseDataset(self.train_csv, self.train_dir,
+                                                    self.s3_client, self.bucket_name,
+                                                    self.transform, self.on_prem)
 
         if stage == "validate":
             # Create the BPSMouseDataset object for the validation data.
-            self.val_bps = BPSMouseDataset(self.val_csv, self.val_dir,
-                                           self.s3_client, self.bucket_name,
-                                           self.transform, self.on_prem)
+            if self.multi_label:
+                self.val_bps = BPSMouseMultiLabel(self.val_csv, self.val_dir,
+                                                        self.s3_client, self.bucket_name,
+                                                        self.transform, self.on_prem)
+            else:
+                self.val_bps = BPSMouseDataset(self.val_csv, self.val_dir,
+                                                        self.s3_client, self.bucket_name,
+                                                        self.transform, self.on_prem)
             
         if stage == "test":
             # Create the BPSMouseDataset object for the test data.
-            self.test_bps = BPSMouseDataset(self.test_csv, self.test_dir,
-                                            self.s3_client, self.bucket_name,
-                                            self.transform, self.on_prem)
-
+            if self.multi_label:
+                self.test_bps = BPSMouseMultiLabel(self.test_csv, self.test_dir,
+                                                   self.s3_client, self.bucket_name,
+                                                   self.transform, self.on_prem)
+            else:
+                self.test_bps = BPSMouseDataset(self.test_csv, self.test_dir,
+                                                self.s3_client, self.bucket_name,
+                                                self.transform, self.on_prem)
 
     def train_dataloader(self) -> TRAIN_DATALOADERS:
         """
