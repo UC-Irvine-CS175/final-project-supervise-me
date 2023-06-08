@@ -159,12 +159,12 @@ class BPSDataModule(pl.LightningDataModule):
             # Create the BPSMouseDataset object for the validation data.
             if self.multi_label:
                 self.val_bps = BPSMouseMultiLabel(self.val_csv, self.val_dir,
-                                                        self.s3_client, self.bucket_name,
-                                                        self.transform, self.on_prem)
+                                                  self.s3_client, self.bucket_name,
+                                                  self.transform, self.on_prem)
             else:
                 self.val_bps = BPSMouseDataset(self.val_csv, self.val_dir,
-                                                        self.s3_client, self.bucket_name,
-                                                        self.transform, self.on_prem)
+                                               self.s3_client, self.bucket_name,
+                                               self.transform, self.on_prem)
             
         if stage == "test":
             # Create the BPSMouseDataset object for the test data.

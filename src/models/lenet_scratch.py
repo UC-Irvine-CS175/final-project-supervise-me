@@ -94,9 +94,14 @@ class LeNet5(nn.Module):
     """
     LeNet-5 architecture for BPS classification
     """
-    def __init__(self):
+    def __init__(self, 
+                 num_labels: int):
         super().__init__()
-        """LeNet-5 architecture 
+        """
+        LeNet-5 architecture 
+        
+        Args:
+            num_labels (int): Specifies the unique number of labels, equal to the output of the final fully connected layer.
 
         Only the first layer, the first fully connected layer, 
         and the output layer are modified to fit the BPS dataset.
@@ -133,7 +138,7 @@ class LeNet5(nn.Module):
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.fc1 = nn.Linear(16 * 47 * 47, 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 6) #6 is the num of different labels
+        self.fc3 = nn.Linear(84, num_labels) #6 is the num of different labels
 
         
 
@@ -148,12 +153,18 @@ class LeNet5(nn.Module):
         return x
 
 class BPSClassifier(pl.LightningModule):
-    """
-    Classifier for BPS dataset
-    """
-    def __init__(self, learning_rate):
+    def __init__(self, 
+                 learning_rate: float = 3e-4, 
+                 num_labels: int = 2):
+        """
+        Classifier for BPS dataset
+
+        Args:
+            learning_rate (float): Specifies the learning rate of the model
+            num_labels (int): Specifies how many different labels there are
+        """
         super().__init__()
-        self.model = LeNet5()
+        self.model = LeNet5(num_labels)
         if torch.cuda.is_available():
             self.model.to('cuda')
         self.val_acc = Accuracy(task='binary',
@@ -252,7 +263,7 @@ def main_original_dataset():
     val_loader = bps_datamodule.val_dataloader()
 
     # model
-    autoencoder = BPSClassifier(learning_rate = wandb.config.lr)
+    autoencoder = BPSClassifier(learning_rate=wandb.config.lr, num_labels=2)
 
     # train model with training and validation dataloaders
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
@@ -341,7 +352,7 @@ def main_multi_label_dataset():
     val_loader = bps_datamodule.val_dataloader()
 
     # model
-    autoencoder = BPSClassifier(learning_rate = wandb.config.lr)
+    autoencoder = BPSClassifier(learning_rate=wandb.config.lr, num_labels=6)
 
     # train model with training and validation dataloaders
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
