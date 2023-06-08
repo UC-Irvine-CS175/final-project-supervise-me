@@ -48,6 +48,12 @@ from datetime import datetime
 import io
 from io import BytesIO
 from PIL import Image
+
+from wandb.sklearn import plot_confusion_matrix
+from sklearn.metrics import confusion_matrix
+
+import numpy as np
+
 @dataclass
 class BPSConfig:
     """ Configuration options for BPS Microscopy dataset.
@@ -134,6 +140,8 @@ class LeNet5(nn.Module):
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 6) #6 is the num of different labels
 
+
+
         
 
     def forward(self, x: torch.Tensor):
@@ -159,6 +167,16 @@ class BPSClassifier(pl.LightningModule):
                                 num_classes=2,
                                 multidim_average='global')
         self.learning_rate = learning_rate
+
+        self.label_dict = {
+            ("Fe", 0.0): [1, 0, 0, 0, 0, 0],
+            ("Fe", 0.3): [0, 1, 0, 0, 0, 0],
+            ("Fe", 0.82): [0, 0, 1, 0, 0, 0],
+            ("X-ray", 0.0): [0, 0, 0, 1, 0, 0],
+            ("X-ray", 0.1): [0, 0, 0, 0, 1, 0],
+            ("X-ray", 1.0): [0, 0, 0, 0, 0, 1]
+        }
+        self.label_names = [label[0] + ", " + str(label[1]) for label in self.label_dict.keys()]
         
 
     def forward(self, x: torch.Tensor):
@@ -183,6 +201,14 @@ class BPSClassifier(pl.LightningModule):
         val_acc = torch.mean((torch.eq(y_pred, y_truth)).float())
         # self.log('val_loss', val_loss)          # Tensorboard
         wandb.log({'val_loss' : val_loss, 'val_acc' : val_acc})      # Weights and Biases
+
+
+        y_truth_np = y_truth.detach().cpu().numpy()
+        y_pred_np = y_pred.detach().cpu().numpy()
+
+        wandb.log({"conf_mat" : wandb.plot.confusion_matrix(probs=None,
+                        y_true=y_truth_np, preds=y_pred_np,
+                        class_names=self.label_names)})
 
     def test_step(self, batch, batch_idx):
         return self(batch)
