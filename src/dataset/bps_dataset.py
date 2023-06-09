@@ -184,7 +184,7 @@ def main():
 
     #### testing dataset class ####
     train_csv_path = 'meta_dose_hi_hr_4_post_exposure_train.csv'
-    training_bps = BPSMouseDatasetLocal(train_csv_path, '../data/processed', transform=None, file_on_prem=True)
+    training_bps = BPSMouseDataset(train_csv_path, '../data/processed', transform=None, file_on_prem=True)
     print(training_bps.__len__())
     print(training_bps.__getitem__(0))
 

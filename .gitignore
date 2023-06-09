@@ -2,3 +2,4 @@
 data/
 models/SAP_model
 wandb/
+__pycache__/
