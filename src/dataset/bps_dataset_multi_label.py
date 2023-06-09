@@ -135,12 +135,16 @@ class BPSMouseDataset(torch.utils.data.Dataset):
             img = np.frombuffer(image_buffer.getvalue(), dtype=np.uint16)
         # apply tranformation if available
         img = self.transform(img)
-        label = self.df.iloc[idx, 2]
+        label = (self.df.iloc[idx, 2], self.df.iloc[idx, 1])
         # return the image and associated one-hot encoded label
         label_dict = {
-                    "Fe" : [1,0],
-                    "X-ray" : [0,1] # TODO: look into pandas getdummies
-                }
+            ("Fe", 0.0): [1, 0, 0, 0, 0, 0],
+            ("Fe", 0.3): [0, 1, 0, 0, 0, 0],
+            ("Fe", 0.82): [0, 0, 1, 0, 0, 0],
+            ("X-ray", 0.0): [0, 0, 0, 1, 0, 0],
+            ("X-ray", 0.1): [0, 0, 0, 0, 1, 0],
+            ("X-ray", 1.0): [0, 0, 0, 0, 0, 1]
+        }
         
         label_tensor = torch.tensor(label_dict[label], dtype=torch.float32)
 
@@ -221,3 +225,4 @@ if __name__ == "__main__":
 #The PyTorch Dataset class is an abstract class that is used to provide an interface for accessing all the samples
 # in your dataset. It inherits from the PyTorch torch.utils.data.Dataset class and overrides two methods:
 # __len__ and __getitem__. The __len__ method returns the number of samples in the dataset and the __getitem__
+

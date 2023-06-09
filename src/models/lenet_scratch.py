@@ -17,6 +17,7 @@ import sys
 sys.path.append(str(root))
 from sklearn.metrics import accuracy_score
 from src.dataset.bps_dataset import BPSMouseDataset
+from src.dataset.bps_dataset_multi_label import BPSMouseDataset as BPSMouseMultiLabel
 from src.dataset.bps_datamodule import BPSDataModule
 
 from torchmetrics import Accuracy
@@ -84,7 +85,7 @@ class BPSConfig:
     max_epochs:         int = 10
     accelerator:        str = 'auto'
     devices:            int = 1
-    num_workers:        int = 4
+    num_workers:        int = 1
     bucket_name:        str = "nasa-bps-training-data"
     s3_path:            str = "Microscopy/train"
     s3_client:          str = boto3.client('s3', config=Config(signature_version=UNSIGNED))
@@ -93,9 +94,14 @@ class LeNet5(nn.Module):
     """
     LeNet-5 architecture for BPS classification
     """
-    def __init__(self):
+    def __init__(self, 
+                 num_labels: int):
         super().__init__()
-        """LeNet-5 architecture 
+        """
+        LeNet-5 architecture 
+        
+        Args:
+            num_labels (int): Specifies the unique number of labels, equal to the output of the final fully connected layer.
 
         Only the first layer, the first fully connected layer, 
         and the output layer are modified to fit the BPS dataset.
@@ -132,7 +138,7 @@ class LeNet5(nn.Module):
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.fc1 = nn.Linear(16 * 47 * 47, 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 6) #6 is the num of different labels
+        self.fc3 = nn.Linear(84, num_labels) #6 is the num of different labels
 
         
 
@@ -147,12 +153,18 @@ class LeNet5(nn.Module):
         return x
 
 class BPSClassifier(pl.LightningModule):
-    """
-    Classifier for BPS dataset
-    """
-    def __init__(self, learning_rate):
+    def __init__(self, 
+                 learning_rate: float = 3e-4, 
+                 num_labels: int = 2):
+        """
+        Classifier for BPS dataset
+
+        Args:
+            learning_rate (float): Specifies the learning rate of the model
+            num_labels (int): Specifies how many different labels there are
+        """
         super().__init__()
-        self.model = LeNet5()
+        self.model = LeNet5(num_labels)
         if torch.cuda.is_available():
             self.model.to('cuda')
         self.val_acc = Accuracy(task='binary',
@@ -193,11 +205,11 @@ class BPSClassifier(pl.LightningModule):
         # https://lightning.ai/docs/pytorch/stable/common/optimization.html#learning-rate-scheduling
         return optimizer
 
-
-
-def main():
+# A main function for our original dataset, that returns the particle-type label
+# e.g. Fe or X-ray
+def main_original_dataset():
     """
-    Testing function for BPS AutoEncoder
+    Testing function for BPS AutoEncoder that predicts single-labels
 
         1) Define configuration options
         2) Define training dataset
@@ -225,7 +237,7 @@ def main():
     dir=my_settings.save_dir
     )
     
-    """
+    
     # Define datamodule
     bps_datamodule = BPSDataModule(train_csv_file=my_settings.train_meta_fname,
                                    train_dir=my_settings.data_dir,
@@ -235,7 +247,8 @@ def main():
                                    num_workers=my_settings.num_workers,
                                    s3_client= my_settings.s3_client,
                                    bucket_name= my_settings.bucket_name,
-                                   s3_path= my_settings.s3_path)
+                                   s3_path= my_settings.s3_path,
+                                   multi_label= False)
     
     ##### UNCOMMENT THE LINE BELOW TO DOWNLOAD DATA FROM S3!!! #####
     #bps_datamodule.prepare_data()
@@ -245,44 +258,12 @@ def main():
     # Using BPSDataModule's setup, define the stage name ('train' or 'val')
     bps_datamodule.setup(stage='train')
     bps_datamodule.setup(stage='validate')
-    """
-    # Define training dataset
-    train_dataset = BPSMouseDataset(my_settings.train_meta_fname,
-                                    my_settings.data_dir,
-                                    transform=transforms.Compose([
-                                        NormalizeBPS(),
-                                        ResizeBPS(224, 224),
-                                        VFlipBPS(),
-                                        HFlipBPS(),
-                                        RotateBPS(90),
-                                        RandomCropBPS(200, 200),
-                                        ToTensor()]),
-                                    file_on_prem=True)
 
-    # Define training dataloader
-    train_loader = DataLoader(train_dataset, batch_size=wandb.config.batch_size,
-                              shuffle=False, num_workers= 4)
+    train_loader = bps_datamodule.train_dataloader()
+    val_loader = bps_datamodule.val_dataloader()
 
-
-    # Define validation dataset
-    validate_dataset = BPSMouseDataset(my_settings.val_meta_fname,
-                                       my_settings.data_dir,
-                                       transform=transforms.Compose([
-                                            NormalizeBPS(),
-                                            ResizeBPS(224, 224),
-                                            VFlipBPS(),
-                                            HFlipBPS(),
-                                            RotateBPS(90),
-                                            RandomCropBPS(200, 200),
-                                            ToTensor()]),
-                                        file_on_prem=True)
-
-    # Define validation dataloader
-    validate_dataloader = DataLoader(validate_dataset, batch_size=wandb.config.batch_size,
-                                     shuffle=False, num_workers= 4)
-    
     # model
-    autoencoder = BPSClassifier(learning_rate = wandb.config.lr)
+    autoencoder = BPSClassifier(learning_rate=wandb.config.lr, num_labels=2)
 
     # train model with training and validation dataloaders
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
@@ -293,7 +274,96 @@ def main():
 
     trainer.fit(model=autoencoder,
                 train_dataloaders=train_loader,
-                val_dataloaders=validate_dataloader)
+                val_dataloaders=val_loader)
+
+    # test model
+    # Automate saving checkpoints from training with this assignment
+    trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
+                         accelerator=my_settings.accelerator,
+                         devices=my_settings.devices,
+                         max_epochs=wandb.config.epochs)
+    
+    # # Load checkpoint from training
+    # model = BPSAutoEncoder.load_from_checkpoint(config.save_dir + 'lightning_logs/version_0/checkpoints/epoch=9.ckpt')
+
+    # Predict with the model
+    # assign an image to x
+
+    # # Define test dataset
+
+    # # Define test dataloader
+    wandb.finish()
+
+# A main function for our multi-label dataset
+# e.g. (particle-type, dosage)
+def main_multi_label_dataset():
+    """
+    Testing function for BPS AutoEncoder that predicts multi-labels
+
+        1) Define configuration options
+        2) Define training dataset
+        3) Define training dataloader
+        4) Define validation dataset
+        5) Define validation dataloader
+        6) Define model
+        7) Define trainer
+        8) Train model
+        9) Save model
+        10) Test model
+        11) Save model
+
+    Notes:
+        - Loss function should decrease with each epoch
+        - Validation loss should be lower than training loss
+        - Test loss should be lower than validation loss
+    """
+    # Define configuration options
+    my_settings = BPSConfig()
+
+    wandb.init(
+    # set the wandb project where this run will be logged
+    project="SAP-lnet-from-scratch",
+    dir=my_settings.save_dir
+    )
+    
+    
+    # Define datamodule
+    bps_datamodule = BPSDataModule(train_csv_file=my_settings.train_meta_fname,
+                                   train_dir=my_settings.data_dir,
+                                   val_csv_file=my_settings.val_meta_fname,
+                                   val_dir=my_settings.data_dir,
+                                   batch_size=wandb.config.batch_size,
+                                   num_workers=my_settings.num_workers,
+                                   s3_client= my_settings.s3_client,
+                                   bucket_name= my_settings.bucket_name,
+                                   s3_path= my_settings.s3_path,
+                                   multi_label= True)
+    
+    ##### UNCOMMENT THE LINE BELOW TO DOWNLOAD DATA FROM S3!!! #####
+    # bps_datamodule.prepare_data()
+    ##### WHEN YOU ARE DONE REMEMBER TO COMMENT THE LINE ABOVE TO AVOID
+    ##### DOWNLOADING THE DATA AGAIN!!! #####
+    
+    # Using BPSDataModule's setup, define the stage name ('train' or 'val')
+    bps_datamodule.setup(stage='train')
+    bps_datamodule.setup(stage='validate')
+
+    train_loader = bps_datamodule.train_dataloader()
+    val_loader = bps_datamodule.val_dataloader()
+
+    # model
+    autoencoder = BPSClassifier(learning_rate=wandb.config.lr, num_labels=6)
+
+    # train model with training and validation dataloaders
+    trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
+                         accelerator=my_settings.accelerator,
+                         devices=my_settings.devices,
+                         max_epochs=wandb.config.epochs,
+                         profiler="simple")
+
+    trainer.fit(model=autoencoder,
+                train_dataloaders=train_loader,
+                val_dataloaders=val_loader)
 
     # test model
     # Automate saving checkpoints from training with this assignment
@@ -336,4 +406,5 @@ if __name__ == "__main__":
             project="SAP-lnet-from-scratch"
         )
 
-    wandb.agent(sweep_id = sweep_id, function=main, count=10)
+    # wandb.agent(sweep_id=sweep_id, function=main_original_dataset, count=10)
+    wandb.agent(sweep_id=sweep_id, function=main_multi_label_dataset, count=10)

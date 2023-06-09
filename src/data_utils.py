@@ -144,7 +144,8 @@ def save_tiffs_local_from_s3(
     # Download files after constructing s3 full paths including the filenames from the csv file
     # Call get_file_from_s3 function for each s3_file_path in s3_file_paths
     for i in range(len(file_name)):
-        file_name[i] = os.path.join(s3_path, file_name[i]) 
+        file_name[i] = os.path.join(s3_path, file_name[i])
+        file_name[i] = file_name[i].replace(os.sep, '/') 
 
     for i in range(len(file_name)):
         get_file_from_s3(s3_client, bucket_name, file_name[i], save_file_path)
