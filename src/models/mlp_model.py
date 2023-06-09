@@ -22,10 +22,10 @@ def prepare_data(train_data : pd.DataFrame, test_data: pd.DataFrame):
         test_fnames[i] = processed_data_dir / test_fnames[i]
     
     X_textual_train = train_data[['dose_Gy', 'hr_post_exposure']]
-    y_train = train_data['partice_type']
+    y_train = train_data['particle_type']
 
     X_textual_test = test_data[['dose_Gy', 'hr_post_exposure']]
-    y_test = test_data['partice_type']
+    y_test = test_data['particle_type']
 
     label_encoder = LabelEncoder()
     y_train = label_encoder.fit_transform(y_train)
