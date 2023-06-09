@@ -27,6 +27,7 @@ def main():
         subset_meta_dose_hr_csv_path=meta_csv_path_fname,
         test_size=0.2,
         out_dir_csv=data_dir,
+        random_state=42,
         stratify_col="particle_type"
     )
 
@@ -34,7 +35,7 @@ def main():
     Saving tiffs from meta.csv for training entire dataset
     Uncomment when ready...
     """
-
+    """
     ## Saves tiffs from meta_train.csv
     print("Downloading tifs from meta_train.csv...")
     save_tiffs_local_from_s3(
@@ -54,7 +55,7 @@ def main():
         local_fnames_meta_path=meta_test_path_fname,
         save_file_path=data_dir
     )
-
+    """
     
 
 
