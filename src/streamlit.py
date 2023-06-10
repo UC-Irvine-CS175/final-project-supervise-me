@@ -34,7 +34,7 @@ def main():
     
     st.write("---")
     # Get all combinations of columns
-    selected_number = st.sidebar.selectbox('Select a number', [2, 3])
+    selected_number = st.sidebar.selectbox('Select a number', [1, 2, 3])
     selected_columns = st.sidebar.multiselect('Select columns for combinations', df.columns[1:])
     combinations = list(itertools.combinations(selected_columns, selected_number))
 
@@ -44,7 +44,7 @@ def main():
         st.subheader(f'Combination: {", ".join(combination)}')
         st.write(count)  
 
-        if len(selected_columns) == 2:
+        if selected_number == 2:
             # Plot bar chart for combination
             fig, ax = plt.subplots(figsize=(10, 6))
             sns.barplot(data=count, x=combination[0], y='Count', hue=combination[1])
