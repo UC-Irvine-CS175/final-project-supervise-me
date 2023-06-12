@@ -181,7 +181,6 @@ class BPSClassifier(pl.LightningModule):
         y_hat = self.model(x)
         y = torch.argmax(y, dim=1) # Fe: [1, 0]-> 0, X-ray: [0, 1] -> 1
         loss = F.cross_entropy(y_hat, y)
-        # self.log('train_loss', loss)            # Tensorboard
         wandb.log({'train_loss' : loss})        # Weights and Biases
         return loss
     
@@ -193,7 +192,6 @@ class BPSClassifier(pl.LightningModule):
         val_loss = F.cross_entropy(y_hat, y)
         # Accuracy is the average of the number of an entire batch of correct predictions
         val_acc = torch.mean((torch.eq(y_pred, y_truth)).float())
-        # self.log('val_loss', val_loss)          # Tensorboard
         wandb.log({'val_loss' : val_loss, 'val_acc' : val_acc})      # Weights and Biases
 
     def test_step(self, batch, batch_idx):
@@ -201,8 +199,6 @@ class BPSClassifier(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr=self.learning_rate)
-        #to-do: pytorch lighting scheduler option here (LearningRateMonitor)
-        # https://lightning.ai/docs/pytorch/stable/common/optimization.html#learning-rate-scheduling
         return optimizer
 
 # A main function for our original dataset, that returns the particle-type label
