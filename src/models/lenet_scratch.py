@@ -15,7 +15,7 @@ import pyprojroot
 root = pyprojroot.find_root(pyprojroot.has_dir(".git"))
 import sys
 sys.path.append(str(root))
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, hamming_loss, jaccard_score
 from src.dataset.bps_dataset import BPSMouseDataset
 from src.dataset.bps_dataset_multi_label import BPSMouseDataset as BPSMouseMultiLabel
 from src.dataset.bps_datamodule import BPSDataModule
@@ -171,7 +171,7 @@ class BPSClassifier(pl.LightningModule):
                                 num_classes=2,
                                 multidim_average='global')
         self.learning_rate = learning_rate
-        
+        self.num_labels = num_labels
 
     def forward(self, x: torch.Tensor):
         return self.model(x)
@@ -192,7 +192,11 @@ class BPSClassifier(pl.LightningModule):
         val_loss = F.cross_entropy(y_hat, y)
         # Accuracy is the average of the number of an entire batch of correct predictions
         val_acc = torch.mean((torch.eq(y_pred, y_truth)).float())
-        wandb.log({'val_loss' : val_loss, 'val_acc' : val_acc})      # Weights and Biases
+        if self.num_labels == 6:
+            jacc_score = jaccard_score(y_truth.cpu(), y_pred.cpu(), average='micro')
+            hamm_loss = hamming_loss(y_truth.cpu(), y_pred.cpu())
+        wandb.log({'val_loss' : val_loss, 'val_acc' : val_acc, 
+                   'jaccard_score': jacc_score, 'hamming_loss': hamm_loss})      # Weights and Biases
 
     def test_step(self, batch, batch_idx):
         return self(batch)
@@ -201,9 +205,9 @@ class BPSClassifier(pl.LightningModule):
         optimizer = optim.Adam(self.parameters(), lr=self.learning_rate)
         return optimizer
 
-# A main function for our original dataset, that returns the particle-type label
+# A main function for our single-label dataset, that returns the particle-type label
 # e.g. Fe or X-ray
-def main_original_dataset():
+def main_single_label_dataset():
     """
     Testing function for BPS AutoEncoder that predicts single-labels
 
@@ -390,7 +394,7 @@ if __name__ == "__main__":
             },
         'parameters': {
             'batch_size': {'values': [16, 32, 64]},
-            'epochs': {'values': [5, 10, 15]},
+            'epochs': {'values': [5, 10, 15, 20]},
             'lr': {'max': 0.1, 'min': 0.0005}
         }
     }
@@ -402,5 +406,10 @@ if __name__ == "__main__":
             project="SAP-lnet-from-scratch"
         )
 
-    # wandb.agent(sweep_id=sweep_id, function=main_original_dataset, count=10)
-    wandb.agent(sweep_id=sweep_id, function=main_multi_label_dataset, count=10)
+    multi_label = input('Multi-label? (y/n): ')
+    if multi_label == 'n':
+        wandb.agent(sweep_id=sweep_id, function=main_single_label_dataset, count=20)
+    else:
+        wandb.agent(sweep_id=sweep_id, function=main_multi_label_dataset, count=20)
+
+    
