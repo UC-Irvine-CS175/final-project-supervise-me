@@ -1,5 +1,5 @@
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import accuracy_score, log_loss
+from sklearn.metrics import accuracy_score, log_loss, jaccard_score, hamming_loss
 
 import pyprojroot
 from pyprojroot import here
@@ -9,12 +9,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from PIL import Image
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import LabelEncoder, StandardScaler, OneHotEncoder
 
 processed_data_dir = root / "data" / "processed"
 
 
-def prepare_data(train_csv_fname : str, test_csv_fname: str, multi_label: bool = False):
+def prepare_data(train_csv_fname : str, test_csv_fname: str, multi_label: bool):
     """
     Prepares data from train/test csv files for training
     
@@ -37,20 +37,17 @@ def prepare_data(train_csv_fname : str, test_csv_fname: str, multi_label: bool =
         test_fnames[i] = processed_data_dir / test_fnames[i]
     
     # Separates the rest of the categorical features and labels
-    label_encoder = LabelEncoder()
-    if not multi_label: 
+
+    if not multi_label:
+        label_encoder = LabelEncoder()
         y_train = train_data['particle_type']
         y_test = test_data['particle_type']
         y_train = label_encoder.fit_transform(y_train)
         y_test = label_encoder.fit_transform(y_test)
     else:
-        print('multi')
-        train_data['combined_label'] = train_data['dose_Gy'].astype(str) + '_' + train_data['particle_type']
-        test_data['combined_label'] = test_data['dose_Gy'].astype(str) + '_' + test_data['particle_type']
-        y_train = label_encoder.fit_transform(train_data['combined_label'])
-        y_test = label_encoder.fit_transform(test_data['combined_label'])
-
-        print(y_train)
+        oh_encoder = OneHotEncoder()
+        y_train = oh_encoder.fit_transform(train_data[['dose_Gy', 'particle_type']])
+        y_test = oh_encoder.fit_transform(test_data[['dose_Gy','particle_type']])
     
     # Converts images into numpy array
     imsize = (200, 200)
@@ -93,37 +90,56 @@ def prepare_data(train_csv_fname : str, test_csv_fname: str, multi_label: bool =
 
     return (X_train, X_test, y_train, y_test)
 
-def train_and_evaluate_model(X_tr, X_te, y_tr, y_te):
-    model = MLPClassifier(hidden_layer_sizes=(25,25), batch_size=64,
-                          max_iter=1, learning_rate_init=3e-4, random_state=42)
-
+def train_and_evaluate_model(X_tr, X_te, y_tr, y_te, multi_label):
     # Trains model incrementally over 10 epochs to 
     # allow checking for losses and accuracies over time.   
-    epochs = 10
-    train_accs = []
-    val_accs = []
-    train_losses = []
-    val_losses = []
-    for epoch in range(epochs):
-        print(f"Epoch {epoch}")
 
-        model.partial_fit(X_tr, y_tr, classes=np.unique(y_tr))
+    if multi_label:
+        # MLPCLassifier's partial_fit() does not support multi-label classification
+        model = MLPClassifier(hidden_layer_sizes=(25,25), batch_size=32,
+                        max_iter=15, learning_rate_init=3e-4, random_state=42)
+        model.fit(X_tr, y_tr)
         
         tr_pred = model.predict(X_tr)
         tr_acc = accuracy_score(y_tr, tr_pred)
-        train_accs.append(tr_acc)
+        train_loss = log_loss(y_tr, model.predict_proba(X_tr))
 
         val_pred = model.predict(X_te)
         val_acc = accuracy_score(y_te, val_pred)
-        val_accs.append(val_acc)
-
-        train_loss = log_loss(y_tr, model.predict_proba(X_tr))
-        train_losses.append(train_loss)
-
         val_loss = log_loss(y_te, model.predict_proba(X_te))
-        val_losses.append(val_loss)
+
+        print('jaccard score:', jaccard_score(y_te, val_pred, average='micro'))
+        print('hamming loss:', hamming_loss(y_te, val_pred))
+
+        return tr_acc, val_acc, train_loss, val_loss
+    else:
+        model = MLPClassifier(hidden_layer_sizes=(25,25), batch_size=64,
+                        max_iter=1, learning_rate_init=3e-4, random_state=42)
+        epochs = 10
+        train_accs = []
+        val_accs = []
+        train_losses = []
+        val_losses = []
+        for epoch in range(epochs):
+            print(f"Epoch {epoch}")
+
+            model.partial_fit(X_tr, y_tr, classes=np.unique(y_tr))
+            
+            tr_pred = model.predict(X_tr)
+            tr_acc = accuracy_score(y_tr, tr_pred)
+            train_accs.append(tr_acc)
+            
+            train_loss = log_loss(y_tr, model.predict_proba(X_tr))
+            train_losses.append(train_loss)
+
+            val_pred = model.predict(X_te)
+            val_acc = accuracy_score(y_te, val_pred)
+            val_accs.append(val_acc)
+            
+            val_loss = log_loss(y_te, model.predict_proba(X_te))
+            val_losses.append(val_loss)
     
-    return train_accs, val_accs, train_losses, val_losses
+        return train_accs, val_accs, train_losses, val_losses
 
 def plot_results(train_accs, val_accs, train_losses, val_losses):
     epochs = range(1, 11)
@@ -150,20 +166,23 @@ def main():
     eval_names = ['train_acc', 'val_acc', 'train_loss', 'val_loss']
     train_csv_fname = 'meta_dose_hi_hr_4_post_exposure_train.csv'
     test_csv_fname = 'meta_dose_hi_hr_4_post_exposure_test.csv'
-
-    X_tr, X_te, y_tr, y_te = prepare_data(train_csv_fname, test_csv_fname, multi_label=True)
-    tr_accs, val_accs, tr_losses, val_losses = train_and_evaluate_model(X_tr, X_te, y_tr, y_te)
-    plot_results(tr_accs, val_accs, tr_losses, val_losses)
-    print("Single-label statistics:")
-    for i, val in enumerate([tr_accs, val_accs, tr_losses, val_losses]):
-        print(f"{eval_names[i]}: {val[-1]}")
     
-    X_tr, X_te, y_tr, y_te = prepare_data(train_csv_fname, test_csv_fname, multi_label=True)
-    tr_accs, val_accs, tr_losses, val_losses = train_and_evaluate_model(X_tr, X_te, y_tr, y_te)
-    plot_results(tr_accs, val_accs, tr_losses, val_losses)
-    print("Multi-label statistics:")
+    multi_label = input('Multi-label? (y/n): ')
+    X_tr, X_te, y_tr, y_te = prepare_data(train_csv_fname, test_csv_fname, multi_label)
+    tr_accs, val_accs, tr_losses, val_losses = train_and_evaluate_model(X_tr, X_te, y_tr, y_te, multi_label)
+    
+    if multi_label == 'y':
+        classification_type = 'Multi-label'
+    else:
+        classification_type = 'Single-label'
+        plot_results(tr_accs, val_accs, tr_losses, val_losses)
+
+    print(f"{classification_type} statistics:")
     for i, val in enumerate([tr_accs, val_accs, tr_losses, val_losses]):
-        print(f"{eval_names[i]}: {val[-1]}")
+        if multi_label == 'y':
+            print(f"{eval_names[i]}: {val}")
+        else:
+            print(f"{eval_names[i]}: {val[-1]}")
 
 if __name__ == "__main__":
     main()
