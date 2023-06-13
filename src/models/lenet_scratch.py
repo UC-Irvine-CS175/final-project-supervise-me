@@ -192,11 +192,11 @@ class BPSClassifier(pl.LightningModule):
         val_loss = F.cross_entropy(y_hat, y)
         # Accuracy is the average of the number of an entire batch of correct predictions
         val_acc = torch.mean((torch.eq(y_pred, y_truth)).float())
+        wandb.log({'val_loss' : val_loss, 'val_acc' : val_acc})
         if self.num_labels == 6:
             jacc_score = jaccard_score(y_truth.cpu(), y_pred.cpu(), average='micro')
             hamm_loss = hamming_loss(y_truth.cpu(), y_pred.cpu())
-        wandb.log({'val_loss' : val_loss, 'val_acc' : val_acc, 
-                   'jaccard_score': jacc_score, 'hamming_loss': hamm_loss})      # Weights and Biases
+            wandb.log({ 'jaccard_score': jacc_score, 'hamming_loss': hamm_loss})      # Weights and Biases
 
     def test_step(self, batch, batch_idx):
         return self(batch)
@@ -263,7 +263,7 @@ def main_single_label_dataset():
     val_loader = bps_datamodule.val_dataloader()
 
     # model
-    autoencoder = BPSClassifier(learning_rate=wandb.config.lr, num_labels=2)
+    autoencoder = BPSClassifier(learning_rate=3e-4, num_labels=2)
 
     # train model with training and validation dataloaders
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
@@ -352,7 +352,7 @@ def main_multi_label_dataset():
     val_loader = bps_datamodule.val_dataloader()
 
     # model
-    autoencoder = BPSClassifier(learning_rate=wandb.config.lr, num_labels=6)
+    autoencoder = BPSClassifier(learning_rate=0.0015, num_labels=6)
 
     # train model with training and validation dataloaders
     trainer = pl.Trainer(default_root_dir=my_settings.save_dir,
@@ -386,16 +386,16 @@ def main_multi_label_dataset():
 
 if __name__ == "__main__":
     sweep_config = {
-        'method': 'random',
+        'method': 'grid',
         'name': 'sweep',
         'metric': {
             'goal': 'minimize', 
             'name': 'train_loss'
             },
         'parameters': {
-            'batch_size': {'values': [16, 32, 64]},
+            'batch_size': {'values': [32, 64, 128]},
             'epochs': {'values': [5, 10, 15, 20]},
-            'lr': {'max': 0.1, 'min': 0.0005}
+            #'lr': {'max': 0.1, 'min': 0.0005}
         }
     }
         
