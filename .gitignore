@@ -1,0 +1,6 @@
+#data folder
+data/processed/*.tif
+data/raw/*.tif
+models/SAP_model
+wandb/
+__pycache__/
